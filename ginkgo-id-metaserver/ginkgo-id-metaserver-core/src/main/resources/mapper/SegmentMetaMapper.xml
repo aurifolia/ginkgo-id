@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.aurifolia.cloud.id.metaserver.mapper.SegmentMetaMapper">
+    <resultMap id="SegmentMetaResultMap" type="org.aurifolia.cloud.id.metaserver.entity.SegmentMeta">
+        <id property="id" column="id" />
+        <result property="bizTag" column="biz_tag" />
+        <result property="nextId" column="next_id" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="SegmentMetaResultMap">
+        SELECT * FROM segment_meta
+    </select>
+
+    <select id="selectByBizTag" resultMap="SegmentMetaResultMap">
+        SELECT * FROM segment_meta WHERE biz_tag = #{bizTag}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO segment_meta (biz_tag, next_id, create_time, update_time)
+        VALUES (#{bizTag}, #{nextId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateNextId">
+        UPDATE segment_meta SET next_id = #{nextId}, update_time = #{updateTime}
+        WHERE biz_tag = #{bizTag}
+    </update>
+
+    <update id="updateNextIdWithVersion">
+        UPDATE segment_meta
+        SET next_id = #{newNextId}, update_time = #{updateTime}
+        WHERE biz_tag = #{bizTag} AND next_id = #{oldNextId}
+    </update>
+</mapper> 
