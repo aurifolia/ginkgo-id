@@ -5,7 +5,9 @@ import java.util.concurrent.locks.LockSupport;
 
 /**
  * 基于snowflake的id生成器
- * 可以提供每秒2000W+的id生成速度
+ * ringBuffer为1024*1024、fillBatchSize为10000，200个消费者线程下，可以提供每秒2000W+的id生成速度
+ * 单个消费线程下，可以提供每秒1.4亿的id生成速度
+ * 消费者线程数越多，tps越低，瓶颈在消费者线程数
  *
  * @author Peng Dan
  * @since 1.0

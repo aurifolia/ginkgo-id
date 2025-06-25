@@ -1,36 +1,37 @@
 package org.aurifolia.cloud.id.metaserver.service.impl;
 
-import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
-import org.aurifolia.cloud.id.metaserver.entity.SnowflakeNode;
+import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
 import org.aurifolia.cloud.id.metaserver.entity.SegmentMeta;
-import org.aurifolia.cloud.id.metaserver.mapper.SnowflakeNodeMapper;
+import org.aurifolia.cloud.id.metaserver.entity.SnowflakeNode;
 import org.aurifolia.cloud.id.metaserver.mapper.SegmentMetaMapper;
+import org.aurifolia.cloud.id.metaserver.mapper.SnowflakeNodeMapper;
 import org.aurifolia.cloud.id.metaserver.service.MetaService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * 元数据服务
+ *
+ * @author Peng Dan
+ * @since 1.0
+ */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class MetaServiceImpl implements MetaService {
-    private static final Logger log = LoggerFactory.getLogger(MetaServiceImpl.class);
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    @Autowired
-    private SnowflakeNodeMapper snowflakeNodeMapper;
-    @Autowired
-    private SegmentMetaMapper segmentMetaMapper;
-    @Autowired
-    private RedissonClient redissonClient;
+    private final SnowflakeNodeMapper snowflakeNodeMapper;
+    private final SegmentMetaMapper segmentMetaMapper;
+    private final RedissonClient redissonClient;
 
     @Override
-    public SnowflakeNodeDTO allocateMachineId(String bizTag) {
+    public SnowflakeNodeDTO nextMachineId(String bizTag) {
         String lockKey = "machine_id_lock:" + bizTag;
         RLock lock = redissonClient.getLock(lockKey);
         lock.lock();
@@ -119,20 +120,26 @@ public class MetaServiceImpl implements MetaService {
     }
 
     private SnowflakeNodeDTO toSnowflakeNodeDTO(SnowflakeNode node) {
-        if (node == null) return null;
+        if (node == null) {
+            return null;
+        }
         return new SnowflakeNodeDTO()
                 .setId(node.getId())
                 .setBizTag(node.getBizTag())
-                .setMachineId(node.getMachineId());
+                .setMachineId(node.getMachineId())
+                .setCreateTime(node.getCreateTime())
+                .setUpdateTime(node.getUpdateTime());
     }
 
     private SegmentMetaDTO toSegmentMetaDTO(SegmentMeta meta) {
-        if (meta == null) return null;
+        if (meta == null) {
+            return null;
+        }
         return new SegmentMetaDTO()
                 .setId(meta.getId())
                 .setBizTag(meta.getBizTag())
                 .setNextId(meta.getNextId())
-                .setCreateTime(meta.getCreateTime() == null ? null : FORMATTER.format(meta.getCreateTime()))
-                .setUpdateTime(meta.getUpdateTime() == null ? null : FORMATTER.format(meta.getUpdateTime()));
+                .setCreateTime(meta.getCreateTime())
+                .setUpdateTime(meta.getUpdateTime());
     }
 } 

@@ -10,5 +10,10 @@ import org.aurifolia.cloud.id.common.entity.Segment;
  */
 @FunctionalInterface
 public interface SegmentProvider {
+    /**
+     * 分配ID段
+     *
+     * @return ID段
+     */
     Segment allocate();
 }

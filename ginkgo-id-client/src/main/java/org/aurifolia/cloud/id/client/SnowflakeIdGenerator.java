@@ -4,6 +4,12 @@ import org.aurifolia.cloud.id.common.generator.SnowflakeEnhancedGenerator;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * 基于snowflake的ID生成器
+ *
+ * @author Peng Dan
+ * @since 1.0
+ */
 public class SnowflakeIdGenerator implements IdGenerator, InitializingBean, DisposableBean {
     private final SnowflakeEnhancedGenerator.IdCache idCache;
 

@@ -2,6 +2,7 @@ package org.aurifolia.cloud.id.common.generator;
 
 import org.aurifolia.cloud.id.common.entity.Segment;
 import org.aurifolia.cloud.id.common.provider.SegmentProvider;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -9,15 +10,15 @@ import java.util.concurrent.locks.LockSupport;
 
 /**
  * 环形队列版分段ID生成器：
- * - 预分配多个Segment，放入环形队列
- * - 取ID时从当前Segment获取，用完自动切换到下一个
- * - 队列空位异步补充新Segment，始终保持高可用
- * - 线程安全，极致高并发
+ * step为10000000，ringBuffer长度为8、200个消费者线程下，可以提供每秒4000W的id生成速度
+ * 消费者线程数越高，tps越高，瓶颈在生产线程数
+ *
+ * @author Peng Dan
+ * @since 1.0
  */
 public class SegmentIdGenerator {
     private static final long PARTIAL_WAIT_NANOS = 100_000;
     private static final int DEFAULT_RING_SIZE = 4;
-    private final int ringSize;
     private final SegmentProvider segmentProvider;
     private final SimpleSpmcRingBuffer<Segment> ringBuffer;
     private final ExecutorService executor;
@@ -54,7 +55,6 @@ public class SegmentIdGenerator {
         // SimpleSpmcRingBuffer 内部已自动将容量调整为2的幂
         this.segmentProvider = segmentProvider;
         this.ringBuffer = new SimpleSpmcRingBuffer<>(ringSize);
-        this.ringSize = this.ringBuffer.capacity(); // 赋值为实际容量
         this.executor = executor;
         // 初始化填满环形队列（异步方式）
         asyncRefillAllEmptySegmentsFromNext();

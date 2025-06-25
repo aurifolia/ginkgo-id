@@ -9,10 +9,6 @@
         <result property="updateTime" column="update_time" />
     </resultMap>
 
-    <select id="selectAll" resultMap="SegmentMetaResultMap">
-        SELECT * FROM segment_meta
-    </select>
-
     <select id="selectByBizTag" resultMap="SegmentMetaResultMap">
         SELECT * FROM segment_meta WHERE biz_tag = #{bizTag}
     </select>
@@ -21,11 +17,6 @@
         INSERT INTO segment_meta (biz_tag, next_id, create_time, update_time)
         VALUES (#{bizTag}, #{nextId}, #{createTime}, #{updateTime})
     </insert>
-
-    <update id="updateNextId">
-        UPDATE segment_meta SET next_id = #{nextId}, update_time = #{updateTime}
-        WHERE biz_tag = #{bizTag}
-    </update>
 
     <update id="updateNextIdWithVersion">
         UPDATE segment_meta

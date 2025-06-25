@@ -1,28 +1,75 @@
 package org.aurifolia.cloud.id.client;
 
+import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+import java.time.Duration;
+
+/**
+ * ID生成器的配置
+ *
+ * @author Peng Dan
+ * @since 1.0
+ */
+@Data
+@Component
+@ConditionalOnProperty(name = "ginkgo.id.generator.enable", havingValue = "true")
 @ConfigurationProperties(prefix = "ginkgo.id.generator")
 public class IdGeneratorProperties {
-    private String type = "snowflake";
-    private Long machineId = 1L;
-    private String bizTag = "default";
-    private Integer bufferSize = 4096;
-    private Integer fillBatchSize = 512;
-    private Long maxIdleTime = 100L;
+    /**
+     * 是否启用
+     */
+    private boolean enable;
+    /**
+     * 基于Snowflake的生成器配置
+     */
+    private SnowflakeConfig snowflake;
+    /**
+     * 基于Segment的生成器配置
+     */
+    private SegmentConfig segment;
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
-    public Long getMachineId() { return machineId; }
-    public void setMachineId(Long machineId) { this.machineId = machineId; }
-    public String getBizTag() { return bizTag; }
-    public void setBizTag(String bizTag) { this.bizTag = bizTag; }
-    public Integer getBufferSize() { return bufferSize; }
-    public void setBufferSize(Integer bufferSize) { this.bufferSize = bufferSize; }
-    public Integer getFillBatchSize() { return fillBatchSize; }
-    public void setFillBatchSize(Integer fillBatchSize) { this.fillBatchSize = fillBatchSize; }
-    public Long getMaxIdleTime() { return maxIdleTime; }
-    public void setMaxIdleTime(Long maxIdleTime) { this.maxIdleTime = maxIdleTime; }
-} 
+    /**
+     * 基于Segment的生成器配置
+     */
+    @Data
+    public static class SegmentConfig {
+        /**
+         * 业务标识
+         */
+        private String bizTag;
+        /**
+         * ID段的步长
+         */
+        private long step = 10_000L;
+        /**
+         * 段的容量
+         */
+        private int ringSize = 8;
+    }
+
+    /**
+     * 基于Snowflake的生成器配置
+     */
+    @Data
+    public static class SnowflakeConfig {
+        /**
+         * 业务标识
+         */
+        private String bizTag;
+        /**
+         * 唤醒缓冲容量
+         */
+        private int bufferSize = 1 << 20;
+        /**
+         * 每次填充的ID数量
+         */
+        private int fillBatchSize = 1 << 14;
+        /**
+         * 生产者线程最大的空闲时间
+         */
+        private Duration maxIdleTime = Duration.ofSeconds(5);
+    }
+}

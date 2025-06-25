@@ -17,8 +17,7 @@
         INSERT INTO snowflake_node (biz_tag, machine_id, create_time, update_time)
         VALUES (#{bizTag}, #{machineId}, #{createTime}, #{updateTime})
     </insert>
-    
-    <!-- 更新机器ID -->
+
     <update id="updateMachineId">
         UPDATE snowflake_node
         SET machine_id = #{newMachineId}, update_time = NOW()

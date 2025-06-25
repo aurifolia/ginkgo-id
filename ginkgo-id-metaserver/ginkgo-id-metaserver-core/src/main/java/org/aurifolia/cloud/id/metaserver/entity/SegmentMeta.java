@@ -2,11 +2,14 @@ package org.aurifolia.cloud.id.metaserver.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+
 import java.time.LocalDateTime;
 
 /**
- * Segment元数据实体，对应表 segment_meta。
- * 记录每个业务标签下的号段分配信息。
+ * Segment元数据实体
+ *
+ * @author Peng Dan
+ * @since 1.0
  */
 @Data
 @Accessors(chain = true)

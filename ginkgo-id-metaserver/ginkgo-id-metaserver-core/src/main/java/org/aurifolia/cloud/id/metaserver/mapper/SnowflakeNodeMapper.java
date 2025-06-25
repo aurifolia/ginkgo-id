@@ -1,11 +1,17 @@
 package org.aurifolia.cloud.id.metaserver.mapper;
 
-import org.aurifolia.cloud.id.metaserver.entity.SnowflakeNode;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.aurifolia.cloud.id.metaserver.entity.SnowflakeNode;
 
 import java.time.LocalDateTime;
 
+/**
+ * snowflake Mapper
+ *
+ * @author Peng Dan
+ * @since 1.0
+ */
 @Mapper
 public interface SnowflakeNodeMapper {
     /**

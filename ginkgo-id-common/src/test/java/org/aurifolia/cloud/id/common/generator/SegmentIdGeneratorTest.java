@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.Map;
 
 class SegmentIdGeneratorTest {
     static class MockSegmentProvider implements SegmentProvider {

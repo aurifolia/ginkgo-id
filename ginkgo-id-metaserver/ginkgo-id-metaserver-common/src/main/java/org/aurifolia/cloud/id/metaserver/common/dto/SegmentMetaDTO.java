@@ -1,10 +1,16 @@
 package org.aurifolia.cloud.id.metaserver.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 /**
- * 号段分配DTO
+ * ID段
+ *
+ * @author Peng Dan
+ * @since 1.0
  */
 @Data
 @Accessors(chain = true)
@@ -28,9 +34,11 @@ public class SegmentMetaDTO {
     /**
      * 创建时间
      */
-    private String createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
     /**
      * 更新时间
      */
-    private String updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 } 
