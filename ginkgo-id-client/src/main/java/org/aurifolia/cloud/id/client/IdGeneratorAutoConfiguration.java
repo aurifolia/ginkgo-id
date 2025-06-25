@@ -37,7 +37,7 @@ public class IdGeneratorAutoConfiguration {
         if (metaFeignClient != null) {
             try {
                 // 通过bizTag向metaserver申请machineId
-                SnowflakeNodeDTO snowflakeNodeDTO = metaFeignClient.allocateMachineId(snowflake.getBizTag());
+                SnowflakeNodeDTO snowflakeNodeDTO = metaFeignClient.nextMachineId(snowflake.getBizTag());
                 if (snowflakeNodeDTO == null || snowflakeNodeDTO.getMachineId() == null) {
                     throw new RuntimeException("allocate machineId failed");
                 }

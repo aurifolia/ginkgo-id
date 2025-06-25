@@ -25,7 +25,7 @@ public class MetaController {
      * @return SnowflakeNodeDTO
      */
     @GetMapping("/snowflake/next")
-    public SnowflakeNodeDTO allocateMachineId(@RequestParam String bizTag) {
+    public SnowflakeNodeDTO nextMachineId(@RequestParam String bizTag) {
         return metaService.nextMachineId(bizTag);
     }
 
