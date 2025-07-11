@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * ID生成器的配置
@@ -30,8 +31,9 @@ public class IdGeneratorAutoConfiguration {
      * @return IdGenerator
      */
     @Bean
+    @Primary
     @ConditionalOnProperty(name = "ginkgo.id.generator.snowflake")
-    public IdGenerator snowflakeIdGenerator() {
+    public IdGenerator snowflake() {
         IdGeneratorProperties.SnowflakeConfig snowflake = properties.getSnowflake();
         Long machineId = null;
         if (metaFeignClient != null) {
@@ -48,7 +50,7 @@ public class IdGeneratorAutoConfiguration {
             }
         }
         // noinspection DataFlowIssue
-        return new SnowflakeIdGenerator(
+        return new SnowflakeIdGeneratorImpl(
                 machineId,
                 snowflake.getBufferSize(),
                 snowflake.getFillBatchSize(),
@@ -64,7 +66,7 @@ public class IdGeneratorAutoConfiguration {
      */
     @Bean
     @ConditionalOnProperty(name = "ginkgo.id.generator.segment")
-    public IdGenerator segmentIdGenerator(HttpSegmentProvider remoteSegmentProvider) {
+    public IdGenerator segment(HttpSegmentProvider remoteSegmentProvider) {
         return new SegmentIdGeneratorImpl(remoteSegmentProvider, properties.getSegment().getRingSize());
     }
 } 

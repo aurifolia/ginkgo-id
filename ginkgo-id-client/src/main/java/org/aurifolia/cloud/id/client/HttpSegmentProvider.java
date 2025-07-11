@@ -5,7 +5,9 @@ import org.aurifolia.cloud.id.common.provider.SegmentProvider;
 import org.aurifolia.cloud.id.metaserver.client.MetaFeignClient;
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConditionalOnMissingBean(SegmentProvider.class)
+@ConditionalOnBean(IdGeneratorProperties.class)
+@ConditionalOnProperty(name = "ginkgo.id.generator.segment")
 public class HttpSegmentProvider implements SegmentProvider {
     @Autowired
     private MetaFeignClient metaFeignClient;

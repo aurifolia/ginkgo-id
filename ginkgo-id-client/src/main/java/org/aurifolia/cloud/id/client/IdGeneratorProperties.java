@@ -15,8 +15,8 @@ import java.time.Duration;
  */
 @Data
 @Component
-@ConditionalOnProperty(name = "ginkgo.id.generator.enable", havingValue = "true")
 @ConfigurationProperties(prefix = "ginkgo.id.generator")
+@ConditionalOnProperty(name = "ginkgo.id.generator.enable", havingValue = "true")
 public class IdGeneratorProperties {
     /**
      * 是否启用

@@ -1,0 +1,16 @@
+ginkgo:
+  id:
+    generator:
+      enable: true
+      snowflake:
+        biz-tag: demo-tag
+        buffer-size: 1048576
+        fill-batch-size: 16384
+        max-idle-time: 5s
+      segment:
+        biz-tag: demo-tag
+        step: 1000000
+        ring-size: 8
+
+metaserver:
+  url: http://localhost:60101

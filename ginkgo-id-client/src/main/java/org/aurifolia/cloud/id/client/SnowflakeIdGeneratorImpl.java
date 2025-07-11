@@ -10,10 +10,10 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Peng Dan
  * @since 1.0
  */
-public class SnowflakeIdGenerator implements IdGenerator, InitializingBean, DisposableBean {
+public class SnowflakeIdGeneratorImpl implements IdGenerator, InitializingBean, DisposableBean {
     private final SnowflakeEnhancedGenerator.IdCache idCache;
 
-    public SnowflakeIdGenerator(long machineId, int bufferSize, int fillBatchSize, long maxIdleTime) {
+    public SnowflakeIdGeneratorImpl(long machineId, int bufferSize, int fillBatchSize, long maxIdleTime) {
         this.idCache = new SnowflakeEnhancedGenerator.IdCache(machineId, bufferSize, fillBatchSize, maxIdleTime);
     }
 
