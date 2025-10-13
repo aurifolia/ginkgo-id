@@ -95,7 +95,7 @@ public class SnowflakeEnhancedGenerator {
 
         public int batchOffer(long[] values, int count) {
             long currentWrite = writeIndex;
-            long available = readIndex.get() + capacity - currentWrite;
+            long available = readIndex.get() + capacity - currentWrite - 1;
             if (available < count) {
                 count = (int) Math.max(0, available);
             }
@@ -131,14 +131,12 @@ public class SnowflakeEnhancedGenerator {
                 checkWatermarkAndTriggerFill();
                 return -1;
             }
-            
+            long value = buffer[(int) (currentRead & mask)];
             // 使用CAS操作确保只有一个消费者能够成功读取该位置的数据
             if (!readIndex.compareAndSet(currentRead, currentRead + 1)) {
                 // 如果CAS失败，说明有其他消费者已经读取了这个位置，需要重新尝试
                 return -1;
             }
-            
-            long value = buffer[(int) (currentRead & mask)];
             checkWatermarkAndTriggerFill();
             return value;
         }
@@ -152,7 +150,7 @@ public class SnowflakeEnhancedGenerator {
                 if (!readIndex.compareAndSet(currentRead, currentRead + toRead)) {
                     return 0;
                 }
-                
+
                 int bufferIndex = (int) (currentRead & mask);
                 if (bufferIndex + toRead <= capacity) {
                     System.arraycopy(buffer, bufferIndex, output, 0, toRead);
@@ -269,6 +267,7 @@ public class SnowflakeEnhancedGenerator {
 
         public void shutdown() {
             this.running = false;
+            LockSupport.unpark(this);
         }
     }
 
