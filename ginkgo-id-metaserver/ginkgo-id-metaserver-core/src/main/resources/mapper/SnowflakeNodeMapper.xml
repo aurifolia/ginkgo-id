@@ -20,7 +20,7 @@
 
     <update id="updateMachineId">
         UPDATE snowflake_node
-        SET machine_id = #{newMachineId}, update_time = NOW()
+        SET machine_id = #{newMachineId}, update_time = #{updateTime}
         WHERE biz_tag = #{bizTag} AND machine_id = #{oldMachineId}
     </update>
 </mapper> 

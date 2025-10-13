@@ -1,7 +1,7 @@
 package org.aurifolia.cloud.id.common.exception;
 
 /**
- * 段分配超时
+ * 段分配超时异常
  *
  * @author Peng Dan
  * @since 1.0

@@ -40,5 +40,10 @@
             <artifactId>ginkgo-id-metaserver-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-common-utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project> 

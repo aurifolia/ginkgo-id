@@ -2,6 +2,7 @@ package org.aurifolia.cloud.id.metaserver.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aurifolia.cloud.common.utils.RetryFunction;
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
 import org.aurifolia.cloud.id.metaserver.entity.SegmentMeta;
@@ -26,6 +27,9 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class MetaServiceImpl implements MetaService {
+    private static final int MAX_RETRIES = 10;
+    private static final long RETRY_DELAY_MS = 20;
+
     private final SnowflakeNodeMapper snowflakeNodeMapper;
     private final SegmentMetaMapper segmentMetaMapper;
     private final RedissonClient redissonClient;
@@ -36,8 +40,7 @@ public class MetaServiceImpl implements MetaService {
         RLock lock = redissonClient.getLock(lockKey);
         lock.lock();
         try {
-            int maxRetries = 10;
-            for (int retry = 0; retry < maxRetries; retry++) {
+            return RetryFunction.retry(MAX_RETRIES, RETRY_DELAY_MS, false, () -> {
                 SnowflakeNode snowflakeNode = snowflakeNodeMapper.selectByBizTag(bizTag);
                 Long oldMachineId = (snowflakeNode == null) ? null : snowflakeNode.getMachineId();
                 Long newMachineId = (oldMachineId == null) ? 0L : oldMachineId + 1;
@@ -61,10 +64,8 @@ public class MetaServiceImpl implements MetaService {
                         return toSnowflakeNodeDTO(updatedNode);
                     }
                 }
-                try { Thread.sleep(5); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-            }
-            log.error("Failed to allocate machine ID after retries for bizTag: {}", bizTag);
-            throw new RuntimeException("Failed to allocate machine ID after retries for bizTag: " + bizTag);
+                throw new RuntimeException("Failed to allocate machine ID for bizTag: " + bizTag);
+            });
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
@@ -82,8 +83,7 @@ public class MetaServiceImpl implements MetaService {
         RLock lock = redissonClient.getLock(lockKey);
         lock.lock();
         try {
-            int maxRetries = 10;
-            for (int retry = 0; retry < maxRetries; retry++) {
+            return RetryFunction.retry(MAX_RETRIES, RETRY_DELAY_MS, false, () -> {
                 SegmentMeta meta = segmentMetaMapper.selectByBizTag(bizTag);
                 LocalDateTime now = LocalDateTime.now();
                 if (meta == null) {
@@ -108,10 +108,8 @@ public class MetaServiceImpl implements MetaService {
                     result.setStep(finalStep);
                     return result;
                 }
-                try { Thread.sleep(5); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-            }
-            log.error("Failed to allocate segment after retries for bizTag: {}", bizTag);
-            throw new RuntimeException("Failed to allocate segment after retries for bizTag: " + bizTag);
+                throw new RuntimeException("Failed to allocate segment for bizTag: " + bizTag);
+            });
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
