@@ -1,6 +1,7 @@
 package org.aurifolia.cloud.id.common.generator;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -71,7 +72,7 @@ public class SnowflakeEnhancedGenerator {
         private final int fillTriggerLevel;
 
         // Consumer fields
-        private volatile long readIndex = 0;
+        private final AtomicLong readIndex = new AtomicLong(0);
         // 伪共享填充
         private long p1, p2, p3, p4, p5, p6, p7;
 
@@ -94,7 +95,7 @@ public class SnowflakeEnhancedGenerator {
 
         public int batchOffer(long[] values, int count) {
             long currentWrite = writeIndex;
-            long available = readIndex + capacity - currentWrite;
+            long available = readIndex.get() + capacity - currentWrite;
             if (available < count) {
                 count = (int) Math.max(0, available);
             }
@@ -116,7 +117,7 @@ public class SnowflakeEnhancedGenerator {
         public boolean offer(long value) {
             long currentWrite = writeIndex;
             long nextWrite = currentWrite + 1;
-            if (nextWrite - readIndex > capacity) {
+            if (nextWrite - readIndex.get() > capacity) {
                 return false;
             }
             buffer[(int) (currentWrite & mask)] = value;
@@ -125,22 +126,33 @@ public class SnowflakeEnhancedGenerator {
         }
 
         public long poll() {
-            long currentRead = readIndex;
+            long currentRead = readIndex.get();
             if (currentRead >= writeIndex) {
                 checkWatermarkAndTriggerFill();
                 return -1;
             }
+            
+            // 使用CAS操作确保只有一个消费者能够成功读取该位置的数据
+            if (!readIndex.compareAndSet(currentRead, currentRead + 1)) {
+                // 如果CAS失败，说明有其他消费者已经读取了这个位置，需要重新尝试
+                return -1;
+            }
+            
             long value = buffer[(int) (currentRead & mask)];
-            readIndex = currentRead + 1;
             checkWatermarkAndTriggerFill();
             return value;
         }
 
         public int batchPoll(long[] output, int maxCount) {
-            long currentRead = readIndex;
+            long currentRead = readIndex.get();
             long available = writeIndex - currentRead;
             int toRead = (int) Math.min(maxCount, available);
             if (toRead > 0) {
+                // 使用CAS确保原子性读取
+                if (!readIndex.compareAndSet(currentRead, currentRead + toRead)) {
+                    return 0;
+                }
+                
                 int bufferIndex = (int) (currentRead & mask);
                 if (bufferIndex + toRead <= capacity) {
                     System.arraycopy(buffer, bufferIndex, output, 0, toRead);
@@ -149,7 +161,6 @@ public class SnowflakeEnhancedGenerator {
                     System.arraycopy(buffer, bufferIndex, output, 0, part1);
                     System.arraycopy(buffer, 0, output, part1, toRead - part1);
                 }
-                readIndex = currentRead + toRead;
             }
             checkWatermarkAndTriggerFill();
             return toRead;
@@ -166,7 +177,7 @@ public class SnowflakeEnhancedGenerator {
         }
 
         public int size() {
-            return (int) (writeIndex - readIndex);
+            return (int) (writeIndex - readIndex.get());
         }
 
         public boolean needsFilling() {
@@ -262,50 +273,18 @@ public class SnowflakeEnhancedGenerator {
     }
 
     /**
-     * 高性能消费者
-     */
-    private record HighPerformanceConsumer(WatermarkTriggeredRingBuffer buffer) {
-        private static final int MAX_SPIN = 1000;
-        private static final int PARK_NANOS = 10_000;
-
-        public long getId() {
-            return buffer.poll();
-        }
-
-        public int getIds(long[] output, int maxCount) {
-            return buffer.batchPoll(output, maxCount);
-        }
-
-        public long getIdBlocking() throws InterruptedException {
-            long id;
-            int spin = 0;
-            while ((id = buffer.poll()) == -1) {
-                if (spin < MAX_SPIN) {
-                    Thread.onSpinWait();
-                    spin++;
-                } else {
-                    LockSupport.parkNanos(PARK_NANOS);
-                }
-                if (Thread.currentThread().isInterrupted()) {
-                    throw new InterruptedException();
-                }
-            }
-            return id;
-        }
-    }
-
-    /**
      * ID缓存
      */
     public static class IdCache {
         private final WatermarkTriggeredProducer producer;
-        private final HighPerformanceConsumer consumer;
+        private final WatermarkTriggeredRingBuffer buffer;
+        private static final int MAX_SPIN = 1000;
+        private static final int PARK_NANOS = 10_000;
 
         public IdCache(long machineId, int bufferSize, int fillBatchSize, long maxIdleTime) {
-            WatermarkTriggeredRingBuffer buffer = new WatermarkTriggeredRingBuffer(bufferSize);
+            this.buffer = new WatermarkTriggeredRingBuffer(bufferSize);
             BatchSnowflakeGenerator generator = new BatchSnowflakeGenerator(machineId);
             this.producer = new WatermarkTriggeredProducer(buffer, generator, fillBatchSize, maxIdleTime);
-            this.consumer = new HighPerformanceConsumer(buffer);
             buffer.setProducerThread(this.producer);
         }
 
@@ -328,15 +307,28 @@ public class SnowflakeEnhancedGenerator {
         }
 
         public long getId() {
-            return consumer.getId();
+            return buffer.poll();
         }
 
         public long getIdBlocking() throws InterruptedException {
-            return consumer.getIdBlocking();
+            long id;
+            int spin = 0;
+            while ((id = buffer.poll()) == -1) {
+                if (spin < MAX_SPIN) {
+                    Thread.onSpinWait();
+                    spin++;
+                } else {
+                    LockSupport.parkNanos(PARK_NANOS);
+                }
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
+            }
+            return id;
         }
 
         public int getIds(long[] output, int maxCount) {
-            return consumer.getIds(output, maxCount);
+            return buffer.batchPoll(output, maxCount);
         }
     }
 }
