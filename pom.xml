@@ -19,4 +19,23 @@
         <module>ginkgo-id-metaserver</module>
     </modules>
 
+    <properties>
+        <ginkgo-id-metaserver-common-version>${project.version}</ginkgo-id-metaserver-common-version>
+        <ginkgo-id-metaserver-common-utils-version>${project.version}</ginkgo-id-metaserver-common-utils-version>
+        <ginkgo-common-logging-version>${project.version}</ginkgo-common-logging-version>
+        <ginkgo-id-common-version>${project.version}</ginkgo-id-common-version>
+        <ginkgo-id-metaserver-client-version>${project.version}</ginkgo-id-metaserver-client-version>
+        <common-lang3-version>3.19.0</common-lang3-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${common-lang3-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>
