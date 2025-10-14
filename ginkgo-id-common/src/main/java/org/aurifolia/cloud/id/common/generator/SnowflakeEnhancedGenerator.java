@@ -1,5 +1,6 @@
 package org.aurifolia.cloud.id.common.generator;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
@@ -146,11 +147,6 @@ public class SnowflakeEnhancedGenerator {
             long available = writeIndex - currentRead;
             int toRead = (int) Math.min(maxCount, available);
             if (toRead > 0) {
-                // 使用CAS确保原子性读取
-                if (!readIndex.compareAndSet(currentRead, currentRead + toRead)) {
-                    return 0;
-                }
-
                 int bufferIndex = (int) (currentRead & mask);
                 if (bufferIndex + toRead <= capacity) {
                     System.arraycopy(buffer, bufferIndex, output, 0, toRead);
@@ -158,6 +154,11 @@ public class SnowflakeEnhancedGenerator {
                     int part1 = capacity - bufferIndex;
                     System.arraycopy(buffer, bufferIndex, output, 0, part1);
                     System.arraycopy(buffer, 0, output, part1, toRead - part1);
+                }
+                // 使用CAS确保原子性读取
+                if (!readIndex.compareAndSet(currentRead, currentRead + toRead)) {
+                    Arrays.fill(output, 0L);
+                    return 0;
                 }
             }
             checkWatermarkAndTriggerFill();
