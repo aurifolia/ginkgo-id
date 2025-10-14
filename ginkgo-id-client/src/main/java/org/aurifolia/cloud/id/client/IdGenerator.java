@@ -7,5 +7,10 @@ package org.aurifolia.cloud.id.client;
  * @since 1.0
  */
 public interface IdGenerator {
+    /**
+     * 获取ID
+     *
+     * @return ID
+     */
     long nextId();
-} 
+}
