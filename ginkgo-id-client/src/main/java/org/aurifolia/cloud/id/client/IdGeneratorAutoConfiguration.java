@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 @EnableAutoConfiguration
-@EnableConfigurationProperties(IdGeneratorProperties.class)
+//@EnableConfigurationProperties(IdGeneratorProperties.class)
 public class IdGeneratorAutoConfiguration {
     @Autowired
     private IdGeneratorProperties properties;
@@ -32,7 +32,7 @@ public class IdGeneratorAutoConfiguration {
      */
     @Bean
     @Primary
-    @ConditionalOnProperty(name = "ginkgo.id.generator.snowflake")
+//    @ConditionalOnProperty(name = "ginkgo.id.generator.snowflake")
     public IdGenerator snowflake() {
         IdGeneratorProperties.SnowflakeConfig snowflake = properties.getSnowflake();
         Long machineId = null;
@@ -65,7 +65,7 @@ public class IdGeneratorAutoConfiguration {
      * @return IdGenerator
      */
     @Bean
-    @ConditionalOnProperty(name = "ginkgo.id.generator.segment")
+//    @ConditionalOnProperty(name = "ginkgo.id.generator.segment")
     public IdGenerator segment(HttpSegmentProvider remoteSegmentProvider) {
         return new SegmentIdGeneratorImpl(remoteSegmentProvider, properties.getSegment().getRingSize());
     }

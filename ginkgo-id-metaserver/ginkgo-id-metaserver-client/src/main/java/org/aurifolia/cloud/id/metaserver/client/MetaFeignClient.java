@@ -3,8 +3,7 @@ package org.aurifolia.cloud.id.metaserver.client;
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Peng Dan
  * @since 1.0
  */
-@FeignClient(name = "metaFeignClient", url = "${metaserver.url}")
-@RequestMapping("/id-meta")
+@FeignClient(name = "metaFeignClient", url = "${ginkgo.id.metaserver.url}")
 public interface MetaFeignClient {
     /**
      * 申请snowflake的machine_id
@@ -22,7 +20,7 @@ public interface MetaFeignClient {
      * @param bizTag 业务标识
      * @return machine_id
      */
-    @PostMapping("/snowflake/next")
+    @GetMapping("/id-meta/snowflake/next")
     SnowflakeNodeDTO nextMachineId(@RequestParam String bizTag);
 
     /**
@@ -32,6 +30,6 @@ public interface MetaFeignClient {
      * @param step 步长
      * @return segment
      */
-    @PostMapping("segment/next")
+    @GetMapping("/id-meta/segment/next")
     SegmentMetaDTO nextSegment(@RequestParam String bizTag, @RequestParam Long step);
 } 

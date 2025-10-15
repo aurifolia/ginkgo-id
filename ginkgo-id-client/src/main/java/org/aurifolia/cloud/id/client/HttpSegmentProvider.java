@@ -17,9 +17,9 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
-@ConditionalOnMissingBean(SegmentProvider.class)
-@ConditionalOnBean(IdGeneratorProperties.class)
-@ConditionalOnProperty(name = "ginkgo.id.generator.segment")
+//@ConditionalOnMissingBean(SegmentProvider.class)
+//@ConditionalOnBean(IdGeneratorProperties.class)
+//@ConditionalOnProperty(name = "ginkgo.id.generator.segment")
 public class HttpSegmentProvider implements SegmentProvider {
     @Autowired
     private MetaFeignClient metaFeignClient;

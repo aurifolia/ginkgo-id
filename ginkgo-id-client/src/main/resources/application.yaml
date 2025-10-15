@@ -11,6 +11,5 @@ ginkgo:
         biz-tag: demo-tag
         step: 1000000
         ring-size: 8
-
-metaserver:
-  url: http://localhost:60101
+    metaserver:
+      url: http://localhost:60101
