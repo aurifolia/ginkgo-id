@@ -1,4 +1,4 @@
-package org.aurifolia.cloud.id.client;
+package org.aurifolia.cloud.id.client.generator;
 
 import org.aurifolia.cloud.id.common.generator.SegmentIdGenerator;
 import org.aurifolia.cloud.id.common.provider.SegmentProvider;

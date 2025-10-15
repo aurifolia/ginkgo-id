@@ -1,4 +1,4 @@
-package org.aurifolia.cloud.id.metaserver.client;
+package org.aurifolia.cloud.id.metaserver.client.feign;
 
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;

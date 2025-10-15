@@ -1,4 +1,4 @@
-package org.aurifolia.cloud.id.client;
+package org.aurifolia.cloud.id.client.generator;
 
 /**
  * ID生成器

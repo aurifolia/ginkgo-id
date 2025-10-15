@@ -1,11 +1,15 @@
-package org.aurifolia.cloud.id.client;
+package org.aurifolia.cloud.id.client.config;
 
-import org.aurifolia.cloud.id.metaserver.client.MetaFeignClient;
+import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyExists;
+import org.aurifolia.cloud.id.client.*;
+import org.aurifolia.cloud.id.client.generator.IdGenerator;
+import org.aurifolia.cloud.id.client.generator.SegmentIdGeneratorImpl;
+import org.aurifolia.cloud.id.client.generator.SnowflakeIdGeneratorImpl;
+import org.aurifolia.cloud.id.client.provider.HttpSegmentProvider;
+import org.aurifolia.cloud.id.metaserver.client.feign.MetaFeignClient;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +22,6 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 @EnableAutoConfiguration
-//@EnableConfigurationProperties(IdGeneratorProperties.class)
 public class IdGeneratorAutoConfiguration {
     @Autowired
     private IdGeneratorProperties properties;
@@ -32,7 +35,7 @@ public class IdGeneratorAutoConfiguration {
      */
     @Bean
     @Primary
-//    @ConditionalOnProperty(name = "ginkgo.id.generator.snowflake")
+    @ConditionalOnPropertyExists("ginkgo.id.generator.snowflake")
     public IdGenerator snowflake() {
         IdGeneratorProperties.SnowflakeConfig snowflake = properties.getSnowflake();
         Long machineId = null;
@@ -65,7 +68,7 @@ public class IdGeneratorAutoConfiguration {
      * @return IdGenerator
      */
     @Bean
-//    @ConditionalOnProperty(name = "ginkgo.id.generator.segment")
+    @ConditionalOnPropertyExists("ginkgo.id.generator.segment")
     public IdGenerator segment(HttpSegmentProvider remoteSegmentProvider) {
         return new SegmentIdGeneratorImpl(remoteSegmentProvider, properties.getSegment().getRingSize());
     }

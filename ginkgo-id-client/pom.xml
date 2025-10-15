@@ -29,6 +29,11 @@
             <version>${ginkgo-id-metaserver-client-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
