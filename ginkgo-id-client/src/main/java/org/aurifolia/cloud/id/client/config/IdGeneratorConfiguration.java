@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 @EnableAutoConfiguration
-public class IdGeneratorAutoConfiguration {
+public class IdGeneratorConfiguration {
     @Autowired
     private IdGeneratorProperties properties;
     @Autowired(required = false)
