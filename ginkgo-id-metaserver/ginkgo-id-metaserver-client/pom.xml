@@ -12,12 +12,11 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.aurifolia.cloud</groupId>
             <artifactId>ginkgo-id-metaserver-common</artifactId>
-            <version>${ginkgo-id-metaserver-common-version}</version>
         </dependency>
     </dependencies>
 </project> 

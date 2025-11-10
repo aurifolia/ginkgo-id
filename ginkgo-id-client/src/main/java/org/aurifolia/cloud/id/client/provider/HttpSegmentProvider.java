@@ -1,6 +1,6 @@
 package org.aurifolia.cloud.id.client.provider;
 
-import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyExists;
+import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyPrefix;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
 import org.aurifolia.cloud.id.common.entity.Segment;
 import org.aurifolia.cloud.id.common.provider.SegmentProvider;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Component
-@ConditionalOnPropertyExists("ginkgo.id.generator.segment")
+@ConditionalOnPropertyPrefix("ginkgo.id.generator.segment")
 public class HttpSegmentProvider implements SegmentProvider {
     @Autowired
     private MetaFeignClient metaFeignClient;

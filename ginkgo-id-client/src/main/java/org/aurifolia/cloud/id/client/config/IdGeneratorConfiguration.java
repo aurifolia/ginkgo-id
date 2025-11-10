@@ -1,6 +1,6 @@
 package org.aurifolia.cloud.id.client.config;
 
-import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyExists;
+import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyPrefix;
 import org.aurifolia.cloud.id.client.*;
 import org.aurifolia.cloud.id.client.generator.IdGenerator;
 import org.aurifolia.cloud.id.client.generator.SegmentIdGeneratorImpl;
@@ -35,7 +35,7 @@ public class IdGeneratorConfiguration {
      */
     @Bean
     @Primary
-    @ConditionalOnPropertyExists("ginkgo.id.generator.snowflake")
+    @ConditionalOnPropertyPrefix("ginkgo.id.generator.snowflake")
     public IdGenerator snowflake() {
         IdGeneratorProperties.SnowflakeConfig snowflake = properties.getSnowflake();
         Long machineId = null;
@@ -68,7 +68,7 @@ public class IdGeneratorConfiguration {
      * @return IdGenerator
      */
     @Bean
-    @ConditionalOnPropertyExists("ginkgo.id.generator.segment")
+    @ConditionalOnPropertyPrefix("ginkgo.id.generator.segment")
     public IdGenerator segment(HttpSegmentProvider remoteSegmentProvider) {
         return new SegmentIdGeneratorImpl(remoteSegmentProvider, properties.getSegment().getRingSize());
     }

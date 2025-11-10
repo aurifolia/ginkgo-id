@@ -1,5 +1,7 @@
 package org.aurifolia.cloud.id.common.generator;
 
+import lombok.extern.slf4j.Slf4j;
+import org.aurifolia.cloud.common.utils.ThreadUtil;
 import org.aurifolia.cloud.id.common.entity.Segment;
 import org.aurifolia.cloud.id.common.provider.SegmentProvider;
 
@@ -16,6 +18,7 @@ import java.util.concurrent.locks.LockSupport;
  * @author Peng Dan
  * @since 1.0
  */
+@Slf4j
 public class SegmentIdGenerator {
     private static final long PARTIAL_WAIT_NANOS = 100_000;
     private static final int DEFAULT_RING_SIZE = 4;
@@ -181,7 +184,13 @@ public class SegmentIdGenerator {
     private void asyncRefillAllEmptySegmentsFromNext() {
         executor.submit(() -> {
             while (ringBuffer.size() < ringBuffer.capacity()) {
-                ringBuffer.offer(segmentProvider.allocate());
+                try {
+                    Segment allocated = segmentProvider.allocate();
+                    ringBuffer.offer(allocated);
+                } catch (Exception e) {
+                    log.error("allocate segment failed", e);
+                    ThreadUtil.sleep(1, TimeUnit.SECONDS);
+                }
             }
         });
     }

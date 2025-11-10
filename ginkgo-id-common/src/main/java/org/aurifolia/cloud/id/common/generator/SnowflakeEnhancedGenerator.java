@@ -1,5 +1,7 @@
 package org.aurifolia.cloud.id.common.generator;
 
+import lombok.Setter;
+
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -84,6 +86,7 @@ public class SnowflakeEnhancedGenerator {
 
         private volatile boolean fillInProgress = false;
         private volatile boolean needsFilling = true;
+        @Setter
         private Thread producerThread = null;
 
         public WatermarkTriggeredRingBuffer(int capacity) {
@@ -183,10 +186,6 @@ public class SnowflakeEnhancedGenerator {
             return needsFilling;
         }
 
-        public void setProducerThread(Thread producerThread) {
-            this.producerThread = producerThread;
-        }
-
         public void markFillStart() {
             fillInProgress = true;
             needsFilling = false;
@@ -258,7 +257,7 @@ public class SnowflakeEnhancedGenerator {
             }
         }
 
-        private void performIdleWait() throws InterruptedException {
+        private void performIdleWait() {
             long waitTimeNanos = initialIdleNanos;
             while (!buffer.needsFilling() && running) {
                 LockSupport.parkNanos(waitTimeNanos);
