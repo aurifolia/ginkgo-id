@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 1.0
  */
 @SpringBootApplication
-public class MetaServerApplication {
+public class IdMetaServerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MetaServerApplication.class, args);
+        SpringApplication.run(IdMetaServerApplication.class, args);
     }
 }

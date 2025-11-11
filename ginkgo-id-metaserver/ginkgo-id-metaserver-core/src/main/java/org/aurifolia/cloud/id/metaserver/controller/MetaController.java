@@ -2,7 +2,7 @@ package org.aurifolia.cloud.id.metaserver.controller;
 
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
-import org.aurifolia.cloud.id.metaserver.service.MetaService;
+import org.aurifolia.cloud.id.metaserver.common.service.IdMetaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/id-meta")
 public class MetaController {
     @Autowired
-    private MetaService metaService;
+    private IdMetaService metaService;
 
     /**
      * 获取snowflake的machine_id

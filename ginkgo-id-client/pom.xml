@@ -25,7 +25,6 @@
         <dependency>
             <groupId>org.aurifolia.cloud</groupId>
             <artifactId>ginkgo-id-metaserver-client</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.aurifolia.cloud</groupId>
