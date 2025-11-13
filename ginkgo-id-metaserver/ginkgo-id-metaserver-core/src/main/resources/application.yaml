@@ -21,15 +21,12 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 dubbo:
+  registry:
+    address: nacos://${nacos.address:127.0.0.1}:8848?username=nacos&password=nacos
+    register-mode: instance
+  protocol:
+    name: tri
+    port: 50051
   application:
     name: ${spring.application.name}
-  protocol:
-    # 使用 dubbo 协议（默认）
-    name: dubbo
-    # Dubbo 服务暴露端口（与 Web 端口不同！）
-    port: 50101
-  registry:
-    address: nacos://${spring.cloud.nacos.discovery.server-addr}
-  consumer:
-    # 启动时不检查依赖服务是否可用（避免循环依赖启动失败）
-    check: false
+    logger: slf4j

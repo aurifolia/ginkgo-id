@@ -1,6 +1,7 @@
 package org.aurifolia.cloud.id.client.generator;
 
 import org.aurifolia.cloud.id.common.generator.SnowflakeEnhancedGenerator;
+import org.aurifolia.cloud.id.common.provider.MachineIdProvider;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -13,8 +14,8 @@ import org.springframework.beans.factory.InitializingBean;
 public class SnowflakeIdGeneratorImpl implements IdGenerator, InitializingBean, DisposableBean {
     private final SnowflakeEnhancedGenerator.IdCache idCache;
 
-    public SnowflakeIdGeneratorImpl(long machineId, int bufferSize, int fillBatchSize, long maxIdleTime) {
-        this.idCache = new SnowflakeEnhancedGenerator.IdCache(machineId, bufferSize, fillBatchSize, maxIdleTime);
+    public SnowflakeIdGeneratorImpl(MachineIdProvider machineIdProvider, int bufferSize, int fillBatchSize, long maxIdleTime) {
+        this.idCache = new SnowflakeEnhancedGenerator.IdCache(machineIdProvider.allocate(), bufferSize, fillBatchSize, maxIdleTime);
     }
 
     @Override

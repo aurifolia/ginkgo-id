@@ -3,6 +3,7 @@ package org.aurifolia.cloud.id.metaserver.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.aurifolia.cloud.common.utils.RetryFunction;
 import org.aurifolia.cloud.id.metaserver.common.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-//@DubboService(version = "1.0.0", group = "dev")
+@DubboService
 public class IdMetaServiceImpl implements IdMetaService {
     private static final int MAX_RETRIES = 10;
     private static final long RETRY_DELAY_MS = 20;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +16,9 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = true)
-public class SnowflakeNodeDTO {
+public class SnowflakeNodeDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -7533093412690213226L;
     /**
      * 自增主键ID
      */
