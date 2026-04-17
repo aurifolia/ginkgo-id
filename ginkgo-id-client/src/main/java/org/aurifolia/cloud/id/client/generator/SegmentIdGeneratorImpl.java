@@ -1,7 +1,7 @@
 package org.aurifolia.cloud.id.client.generator;
 
-import org.aurifolia.cloud.id.common.generator.SegmentIdGenerator;
-import org.aurifolia.cloud.id.common.provider.SegmentProvider;
+import org.aurifolia.cloud.id.api.IdGenerator;
+import org.aurifolia.cloud.id.api.provider.SegmentProvider;
 
 /**
  * 基于段的ID生成器

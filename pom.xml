@@ -14,7 +14,7 @@
     <name>ginkgo-id</name>
     <description>Ginkgo ID generation service</description>
     <modules>
-        <module>ginkgo-id-common</module>
+        <module>ginkgo-id-api</module>
         <module>ginkgo-id-client</module>
         <module>ginkgo-id-metaserver</module>
     </modules>
@@ -24,24 +24,15 @@
         <mysql-connector-j.version>9.5.0</mysql-connector-j.version>
         <mybatis-spring-boot-starter.version>3.0.5</mybatis-spring-boot-starter.version>
         <redisson-spring-boot-starter.version>3.52.0</redisson-spring-boot-starter.version>
-        <dubbo.version>3.3.5</dubbo.version>
+        <dubbo.version>3.3.6</dubbo.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- ID API模块 -->
             <dependency>
                 <groupId>org.aurifolia.cloud</groupId>
-                <artifactId>ginkgo-id-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aurifolia.cloud</groupId>
-                <artifactId>ginkgo-id-metaserver-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aurifolia.cloud</groupId>
-                <artifactId>ginkgo-id-metaserver-common</artifactId>
+                <artifactId>ginkgo-id-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

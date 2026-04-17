@@ -1,7 +1,7 @@
 package org.aurifolia.cloud.id.client.generator;
 
-import org.aurifolia.cloud.id.common.generator.SnowflakeEnhancedGenerator;
-import org.aurifolia.cloud.id.common.provider.MachineIdProvider;
+import org.aurifolia.cloud.id.api.IdGenerator;
+import org.aurifolia.cloud.id.api.provider.MachineIdProvider;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 

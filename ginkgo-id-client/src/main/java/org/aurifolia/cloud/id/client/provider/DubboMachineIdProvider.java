@@ -3,10 +3,10 @@ package org.aurifolia.cloud.id.client.provider;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyPrefix;
+import org.aurifolia.cloud.id.api.dto.SnowflakeNodeDTO;
+import org.aurifolia.cloud.id.api.provider.MachineIdProvider;
+import org.aurifolia.cloud.id.api.service.IdMetaService;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
-import org.aurifolia.cloud.id.common.provider.MachineIdProvider;
-import org.aurifolia.cloud.id.metaserver.common.dto.SnowflakeNodeDTO;
-import org.aurifolia.cloud.id.metaserver.common.service.IdMetaService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
