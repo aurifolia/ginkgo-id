@@ -10,7 +10,9 @@
     </resultMap>
 
     <select id="selectByBizTag" resultMap="MachineResultMap">
-        SELECT * FROM snowflake_node WHERE biz_tag = #{bizTag}
+        SELECT id, biz_tag, machine_id, create_time, update_time 
+        FROM snowflake_node 
+        WHERE biz_tag = #{bizTag}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">

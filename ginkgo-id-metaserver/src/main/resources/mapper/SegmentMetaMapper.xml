@@ -10,7 +10,9 @@
     </resultMap>
 
     <select id="selectByBizTag" resultMap="SegmentMetaResultMap">
-        SELECT * FROM segment_meta WHERE biz_tag = #{bizTag}
+        SELECT id, biz_tag, next_id, create_time, update_time 
+        FROM segment_meta 
+        WHERE biz_tag = #{bizTag}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">

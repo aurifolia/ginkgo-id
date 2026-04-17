@@ -7,7 +7,7 @@ import org.aurifolia.cloud.id.metaserver.entity.SnowflakeNode;
 import java.time.LocalDateTime;
 
 /**
- * snowflake Mapper
+ * Snowflake节点数据访问层
  *
  * @author Peng Dan
  * @since 1.0

@@ -7,7 +7,6 @@ import org.aurifolia.cloud.id.api.provider.SegmentProvider;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
 import org.aurifolia.cloud.id.client.generator.SegmentIdGeneratorImpl;
 import org.aurifolia.cloud.id.client.generator.SnowflakeIdGeneratorImpl;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,7 +18,6 @@ import org.springframework.context.annotation.Primary;
  * @since 1.0
  */
 @Configuration
-@EnableAutoConfiguration
 @RequiredArgsConstructor
 public class IdGeneratorConfiguration {
     private final IdGeneratorProperties properties;
