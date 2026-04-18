@@ -2,6 +2,7 @@ package org.aurifolia.cloud.id.metaserver.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aurifolia.cloud.common.model.Result;
 import org.aurifolia.cloud.id.api.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.api.dto.SnowflakeNodeDTO;
 import org.aurifolia.cloud.id.api.service.IdMetaService;
@@ -33,9 +34,9 @@ public class MetaController {
      * @return Snowflake节点信息
      */
     @GetMapping("/snowflake/next")
-    public SnowflakeNodeDTO nextMachineId(@RequestParam String bizTag) {
+    public Result<SnowflakeNodeDTO> nextMachineId(@RequestParam String bizTag) {
         log.debug("请求分配机器ID: bizTag={}", bizTag);
-        return idMetaService.nextMachineId(bizTag);
+        return Result.success(idMetaService.nextMachineId(bizTag));
     }
 
     /**
@@ -46,10 +47,10 @@ public class MetaController {
      * @return 号段元数据
      */
     @GetMapping("/segment/next")
-    public SegmentMetaDTO nextSegment(
+    public Result<SegmentMetaDTO> nextSegment(
             @RequestParam String bizTag,
             @RequestParam(required = false) Long step) {
         log.debug("请求分配号段: bizTag={}, step={}", bizTag, step);
-        return idMetaService.nextSegment(bizTag, step);
+        return Result.success(idMetaService.nextSegment(bizTag, step));
     }
 }
