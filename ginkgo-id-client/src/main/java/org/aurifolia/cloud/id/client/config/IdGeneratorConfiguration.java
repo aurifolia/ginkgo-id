@@ -5,8 +5,8 @@ import org.aurifolia.cloud.common.core.annotation.ConditionalOnPropertyPrefix;
 import org.aurifolia.cloud.id.api.provider.MachineIdProvider;
 import org.aurifolia.cloud.id.api.provider.SegmentProvider;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
-import org.aurifolia.cloud.id.client.generator.SegmentIdGeneratorImpl;
-import org.aurifolia.cloud.id.client.generator.SnowflakeIdGeneratorImpl;
+import org.aurifolia.cloud.id.client.generator.SegmentIdGenerator;
+import org.aurifolia.cloud.id.client.generator.SnowflakeIdGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -32,7 +32,7 @@ public class IdGeneratorConfiguration {
     @ConditionalOnPropertyPrefix("ginkgo.id.generator.snowflake")
     public org.aurifolia.cloud.id.api.IdGenerator snowflake(MachineIdProvider machineIdProvider) {
         IdGeneratorProperties.SnowflakeConfig snowflake = properties.getSnowflake();
-        return new SnowflakeIdGeneratorImpl(
+        return new SnowflakeIdGenerator(
                 machineIdProvider,
                 snowflake.getBufferSize(),
                 snowflake.getFillBatchSize(),
@@ -49,6 +49,6 @@ public class IdGeneratorConfiguration {
     @Bean
     @ConditionalOnPropertyPrefix("ginkgo.id.generator.segment")
     public org.aurifolia.cloud.id.api.IdGenerator segment(SegmentProvider segmentProvider) {
-        return new SegmentIdGeneratorImpl(segmentProvider, properties.getSegment().getRingSize());
+        return new SegmentIdGenerator(segmentProvider, properties.getSegment().getRingSize());
     }
 } 
