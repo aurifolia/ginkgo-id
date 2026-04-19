@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Peng Dan
  * @since 1.0
  */
-@FeignClient(name = "ginkgo-id-metaserver")
+@FeignClient(name = "ginkgo-id-metaserver", url = "${ginkgo.id.metaserver.url:}")
 public interface IdMetaFeignClient {
     /**
      * 申请snowflake的machine_id
