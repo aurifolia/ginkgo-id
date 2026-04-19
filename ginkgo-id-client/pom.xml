@@ -26,6 +26,10 @@
             <groupId>org.aurifolia.cloud</groupId>
             <artifactId>ginkgo-common-utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-common-model</artifactId>
+        </dependency>
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

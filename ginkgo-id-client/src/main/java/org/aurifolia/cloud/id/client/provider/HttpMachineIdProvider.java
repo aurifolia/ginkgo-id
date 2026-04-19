@@ -6,6 +6,7 @@ import org.aurifolia.cloud.id.api.dto.SnowflakeNodeDTO;
 import org.aurifolia.cloud.id.api.provider.MachineIdProvider;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
 import org.aurifolia.cloud.id.api.service.IdMetaService;
+import org.aurifolia.cloud.id.client.feign.IdMetaFeignClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -19,15 +20,16 @@ import org.springframework.stereotype.Component;
 @Primary
 @Component
 @RequiredArgsConstructor
-@ConditionalOnBean(IdMetaService.class)
+@ConditionalOnBean(IdMetaFeignClient.class)
 @ConditionalOnPropertyPrefix("ginkgo.id.generator.snowflake")
 public class HttpMachineIdProvider implements MachineIdProvider {
     private final IdGeneratorProperties properties;
-    private final IdMetaService idMetaService;
+    private final IdMetaFeignClient idMetaFeignClient;
 
     @Override
     public long allocate() {
-        SnowflakeNodeDTO snowflakeNodeDTO = idMetaService.nextMachineId(properties.getSnowflake().getBizTag());
+        SnowflakeNodeDTO snowflakeNodeDTO =
+                idMetaFeignClient.nextMachineId(properties.getSnowflake().getBizTag()).getData();
         return snowflakeNodeDTO.getMachineId();
     }
 }

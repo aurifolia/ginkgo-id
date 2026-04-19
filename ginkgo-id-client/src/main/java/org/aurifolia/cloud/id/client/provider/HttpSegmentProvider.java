@@ -7,6 +7,7 @@ import org.aurifolia.cloud.id.api.entity.Segment;
 import org.aurifolia.cloud.id.api.provider.SegmentProvider;
 import org.aurifolia.cloud.id.api.service.IdMetaService;
 import org.aurifolia.cloud.id.client.IdGeneratorProperties;
+import org.aurifolia.cloud.id.client.feign.IdMetaFeignClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -20,15 +21,16 @@ import org.springframework.stereotype.Component;
 @Primary
 @Component
 @RequiredArgsConstructor
-@ConditionalOnBean(IdMetaService.class)
+@ConditionalOnBean(IdMetaFeignClient.class)
 @ConditionalOnPropertyPrefix("ginkgo.id.generator.segment")
 public class HttpSegmentProvider implements SegmentProvider {
     private final IdGeneratorProperties properties;
-    private final IdMetaService idMetaService;
+    private final IdMetaFeignClient idMetaFeignClient;
 
     @Override
     public Segment allocate() {
-        SegmentMetaDTO segmentMetaDTO = idMetaService.nextSegment(properties.getSegment().getBizTag(), properties.getSegment().getStep());
+        SegmentMetaDTO segmentMetaDTO = idMetaFeignClient.nextSegment(properties.getSegment().getBizTag(),
+                properties.getSegment().getStep()).getData();
         return new Segment(segmentMetaDTO.getNextId(), segmentMetaDTO.getNextId() + segmentMetaDTO.getStep() - 1);
     }
 }
