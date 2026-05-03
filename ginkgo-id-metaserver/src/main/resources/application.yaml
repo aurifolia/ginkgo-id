@@ -22,7 +22,7 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
-#      password: "123"
+      password: "1234567890"
       timeout: 3000
       lettuce:
         pool:
@@ -33,7 +33,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: localhost:49155
 
 # MyBatis配置
 mybatis:
@@ -46,7 +46,7 @@ mybatis:
 # Dubbo配置
 dubbo:
   registry:
-    address: nacos://${nacos.address:127.0.0.1}:8848?username=nacos&password=nacos
+    address: nacos://${nacos.address:127.0.0.1}:49155?username=nacos&password=nacos
     register-mode: instance
   protocol:
     name: tri

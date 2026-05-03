@@ -1,22 +1,20 @@
 -- Snowflake节点表
-CREATE TABLE IF NOT EXISTS `t_snowflake_node` (
+CREATE TABLE IF NOT EXISTS `snowflake_node` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `biz_tag` VARCHAR(64) NOT NULL COMMENT '业务标识',
     `machine_id` BIGINT NOT NULL DEFAULT 0 COMMENT '机器ID',
-    `datacenter_id` BIGINT NOT NULL DEFAULT 0 COMMENT '数据中心ID',
     `status` TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-未使用，1-已使用',
     `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_biz_machine` (`biz_tag`, `machine_id`, `datacenter_id`),
-    KEY `idx_biz_status` (`biz_tag`, `status`)
+    UNIQUE KEY `uk_biz_tag` (`biz_tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Snowflake节点表';
 
 -- Segment元数据表
-CREATE TABLE IF NOT EXISTS `t_segment_meta` (
+CREATE TABLE IF NOT EXISTS `segment_meta` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `biz_tag` VARCHAR(64) NOT NULL COMMENT '业务标识',
-    `max_id` BIGINT NOT NULL DEFAULT 0 COMMENT '当前最大ID',
+    `next_id` BIGINT NOT NULL DEFAULT 0 COMMENT '下一个ID',
     `step` BIGINT NOT NULL DEFAULT 1000 COMMENT '步长',
     `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
