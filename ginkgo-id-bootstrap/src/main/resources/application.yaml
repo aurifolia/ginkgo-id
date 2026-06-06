@@ -1,0 +1,46 @@
+server:
+  port: 60101
+
+spring:
+  application:
+    name: ginkgo-id-metaserver
+  
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gk_id?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: temp
+    password: "123"
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:49155
+
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: org.aurifolia.cloud.id.infrastructure.*.po
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# Dubbo配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: tri
+    port: 50057
+  registry:
+    address: nacos://127.0.0.1:49155?username=nacos&password=nacos
+    register-mode: instance
+    parameters:
+      username: nacos
+      password: nacos
+  scan:
+    base-packages: org.aurifolia.cloud.id.infrastructure
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    org.aurifolia.cloud.id: DEBUG

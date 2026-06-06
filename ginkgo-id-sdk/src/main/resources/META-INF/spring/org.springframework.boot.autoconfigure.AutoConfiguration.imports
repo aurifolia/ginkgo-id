@@ -1,0 +1,2 @@
+org.aurifolia.cloud.id.sdk.http.config.HttpSdkAutoConfiguration
+org.aurifolia.cloud.id.sdk.rpc.config.RpcSdkAutoConfiguration

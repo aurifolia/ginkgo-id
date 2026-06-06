@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.aurifolia.cloud</groupId>
+        <artifactId>ginkgo-id</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ginkgo-id-bootstrap</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Infrastructure module (which includes all other layers) -->
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-id-infrastructure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- Interfaces module -->
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-id-interfaces</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- SDK module -->
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-id-sdk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.aurifolia.cloud.id.bootstrap.GinkgoIdApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

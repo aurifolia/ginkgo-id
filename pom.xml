@@ -6,7 +6,6 @@
         <groupId>org.aurifolia.cloud</groupId>
         <artifactId>ginkgo-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>ginkgo-id</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -14,25 +13,59 @@
     <name>ginkgo-id</name>
     <description>Ginkgo ID generation service</description>
     <modules>
-        <module>ginkgo-id-api</module>
-        <module>ginkgo-id-client</module>
-        <module>ginkgo-id-metaserver</module>
+        <module>ginkgo-id-common</module>
+        <module>ginkgo-id-domain</module>
+        <module>ginkgo-id-application</module>
+        <module>ginkgo-id-infrastructure</module>
+        <module>ginkgo-id-interfaces</module>
+        <module>ginkgo-id-sdk</module>
+        <module>ginkgo-id-bootstrap</module>
     </modules>
 
     <properties>
         <ginkgo-common.version>0.0.1-SNAPSHOT</ginkgo-common.version>
         <mysql-connector-j.version>9.6.0</mysql-connector-j.version>
         <mybatis-spring-boot-starter.version>4.0.1</mybatis-spring-boot-starter.version>
-        <redisson-spring-boot-starter.version>4.3.1</redisson-spring-boot-starter.version>
         <dubbo.version>3.3.6</dubbo.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- ID API模块 -->
+            <!-- DDD modules -->
             <dependency>
                 <groupId>org.aurifolia.cloud</groupId>
-                <artifactId>ginkgo-id-api</artifactId>
+                <artifactId>ginkgo-id-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-interfaces</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-sdk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aurifolia.cloud</groupId>
+                <artifactId>ginkgo-id-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -66,11 +99,6 @@
                 <version>${mybatis-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>${redisson-spring-boot-starter.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
                 <version>${dubbo.version}</version>
@@ -84,6 +112,16 @@
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
