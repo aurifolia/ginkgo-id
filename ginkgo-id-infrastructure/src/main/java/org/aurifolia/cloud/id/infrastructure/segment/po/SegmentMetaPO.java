@@ -12,27 +12,27 @@ import java.time.LocalDateTime;
  */
 @Data
 public class SegmentMetaPO {
-    
+
     /**
      * 自增主键ID
      */
     private Long id;
-    
+
     /**
      * 业务标签
      */
     private String bizTag;
-    
+
     /**
-     * 下一个ID
+     * 下一个可用号段编号
      */
-    private Long nextId;
-    
+    private Long nextSegmentNumber;
+
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
-    
+
     /**
      * 更新时间
      */

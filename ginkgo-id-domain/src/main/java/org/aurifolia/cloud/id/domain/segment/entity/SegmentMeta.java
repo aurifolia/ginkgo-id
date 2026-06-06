@@ -1,6 +1,7 @@
 package org.aurifolia.cloud.id.domain.segment.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -10,42 +11,49 @@ import java.time.LocalDateTime;
  * @author Peng Dan
  * @since 2.0
  */
-@Data
+@Getter
 public class SegmentMeta {
-    
-    /**
-     * 默认步长
-     */
-    private static final Long DEFAULT_STEP = 1000L;
-    
+    @Setter
     private Long id;
     private String bizTag;
-    private Long nextId;
+    private long nextSegmentNumber;
     private LocalDateTime createTime;
+    @Setter
     private LocalDateTime updateTime;
-    
+
     /**
      * 创建新的号段元数据
+     *
+     * @param bizTag 业务标签
      */
     public static SegmentMeta create(String bizTag) {
         SegmentMeta meta = new SegmentMeta();
         meta.bizTag = bizTag;
-        meta.nextId = 0L;
+        meta.nextSegmentNumber = 0L;
         meta.createTime = LocalDateTime.now();
         meta.updateTime = LocalDateTime.now();
         return meta;
     }
-    
+
     /**
-     * 分配号段（使用指定步长，如果为空或无效则使用默认步长）
-     *
-     * @param step 步长（可选）
+     * 从持久化数据重建号段元数据
      */
-    public void allocate(Long step) {
-        // 业务规则：如果步长为空或无效，使用默认步长
-        Long actualStep = (step == null || step <= 0) ? DEFAULT_STEP : step;
-        
-        this.nextId = this.nextId + actualStep;
+    public static SegmentMeta reconstitute(Long id, String bizTag, long nextSegmentNumber,
+                                           LocalDateTime createTime, LocalDateTime updateTime) {
+        SegmentMeta meta = new SegmentMeta();
+        meta.id = id;
+        meta.bizTag = bizTag;
+        meta.nextSegmentNumber = nextSegmentNumber;
+        meta.createTime = createTime;
+        meta.updateTime = updateTime;
+        return meta;
+    }
+
+    /**
+     * 分配下一个号段编号（步长固定为1）
+     */
+    public void allocateNextSegment() {
+        this.nextSegmentNumber++;
         this.updateTime = LocalDateTime.now();
     }
 }

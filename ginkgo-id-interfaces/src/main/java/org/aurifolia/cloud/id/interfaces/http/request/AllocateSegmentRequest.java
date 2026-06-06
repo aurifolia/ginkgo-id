@@ -11,15 +11,10 @@ import lombok.Data;
  */
 @Data
 public class AllocateSegmentRequest {
-    
+
     /**
      * 业务标签
      */
     @NotBlank(message = "业务标签不能为空")
     private String bizTag;
-    
-    /**
-     * 步长（可选，默认1000）
-     */
-    private Long step = 1000L;
 }

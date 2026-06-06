@@ -23,50 +23,32 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/segment")
 public class SegmentMetaController {
-    
+
     private final SegmentMetaAppService appService;
-    
+
     public SegmentMetaController(SegmentMetaAppService appService) {
         this.appService = appService;
     }
-    
+
     /**
      * 注册业务标签
      */
     @PostMapping("/register")
     public Result<Void> registerBizTag(@Validated @RequestBody RegisterBizTagRequest request) {
-        log.info("HTTP请求注册业务标签: bizTag={}", request.getBizTag());
-        
-        // 构建命令
-        SegmentMetaRegisterCommand command = new SegmentMetaRegisterCommand(request.getBizTag());
-        
-        // 调用应用服务
-        appService.registerBizTag(command);
-        
+        appService.registerBizTag(new SegmentMetaRegisterCommand(request.getBizTag()));
         return Result.success(null);
     }
-    
+
     /**
      * 分配号段
      */
     @PostMapping("/allocate")
     public Result<SegmentMetaResponse> allocateSegment(
             @Validated @RequestBody AllocateSegmentRequest request) {
-        log.info("HTTP请求分配号段: bizTag={}, step={}", request.getBizTag(), request.getStep());
-        
-        // 构建命令
-        AllocateSegmentCommand command = new AllocateSegmentCommand(
-                request.getBizTag(), 
-                request.getStep()
-        );
-        
-        // 调用应用服务
-        SegmentMetaDTO dto = appService.allocateSegment(command);
-        
-        // 转换为响应对象
+        SegmentMetaDTO dto = appService.allocateSegment(
+                new AllocateSegmentCommand(request.getBizTag()));
         SegmentMetaResponse response = new SegmentMetaResponse();
         BeanUtils.copyProperties(dto, response);
-        
         return Result.success(response);
     }
 }

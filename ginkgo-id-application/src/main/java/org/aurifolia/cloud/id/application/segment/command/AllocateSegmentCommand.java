@@ -14,14 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AllocateSegmentCommand {
-    
+
     /**
      * 业务标签
      */
     private String bizTag;
-    
-    /**
-     * 步长
-     */
-    private Long step;
 }
