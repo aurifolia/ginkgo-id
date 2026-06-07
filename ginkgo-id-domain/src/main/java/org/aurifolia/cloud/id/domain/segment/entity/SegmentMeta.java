@@ -16,7 +16,7 @@ public class SegmentMeta {
     @Setter
     private Long id;
     private String bizTag;
-    private long nextSegmentNumber;
+    private Long maxId;
     private LocalDateTime createTime;
     @Setter
     private LocalDateTime updateTime;
@@ -29,7 +29,7 @@ public class SegmentMeta {
     public static SegmentMeta create(String bizTag) {
         SegmentMeta meta = new SegmentMeta();
         meta.bizTag = bizTag;
-        meta.nextSegmentNumber = 0L;
+        meta.maxId = 0L;
         meta.createTime = LocalDateTime.now();
         meta.updateTime = LocalDateTime.now();
         return meta;
@@ -38,12 +38,12 @@ public class SegmentMeta {
     /**
      * 从持久化数据重建号段元数据
      */
-    public static SegmentMeta reconstitute(Long id, String bizTag, long nextSegmentNumber,
+    public static SegmentMeta reconstitute(Long id, String bizTag, Long maxId,
                                            LocalDateTime createTime, LocalDateTime updateTime) {
         SegmentMeta meta = new SegmentMeta();
         meta.id = id;
         meta.bizTag = bizTag;
-        meta.nextSegmentNumber = nextSegmentNumber;
+        meta.maxId = maxId;
         meta.createTime = createTime;
         meta.updateTime = updateTime;
         return meta;
@@ -53,7 +53,7 @@ public class SegmentMeta {
      * 分配下一个号段编号（步长固定为1）
      */
     public void allocateNextSegment() {
-        this.nextSegmentNumber++;
+        this.maxId++;
         this.updateTime = LocalDateTime.now();
     }
 }

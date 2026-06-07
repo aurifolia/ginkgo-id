@@ -28,9 +28,9 @@ public class SegmentAllocateResponse {
     private String bizTag;
 
     /**
-     * 下一个可用号段编号
+     * 当前已分配的最大号段编号
      */
-    private Long nextSegmentNumber;
+    private Long maxId;
 
     /**
      * 创建时间

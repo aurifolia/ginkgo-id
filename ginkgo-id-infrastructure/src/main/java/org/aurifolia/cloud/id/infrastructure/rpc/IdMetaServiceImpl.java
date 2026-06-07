@@ -25,6 +25,6 @@ public class IdMetaServiceImpl implements IdMetaService {
     @Override
     public Long nextSegment(String bizTag) {
         AllocateSegmentCommand command = new AllocateSegmentCommand(bizTag);
-        return segmentMetaAppService.allocateSegment(command).getNextSegmentNumber();
+        return segmentMetaAppService.allocateSegment(command).getMaxId();
     }
 }

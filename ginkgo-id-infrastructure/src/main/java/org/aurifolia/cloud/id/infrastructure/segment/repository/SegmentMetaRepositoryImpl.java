@@ -48,7 +48,7 @@ public class SegmentMetaRepositoryImpl implements SegmentMetaRepository {
 
     private SegmentMeta toEntity(SegmentMetaPO po) {
         return SegmentMeta.reconstitute(
-                po.getId(), po.getBizTag(), po.getNextSegmentNumber(),
+                po.getId(), po.getBizTag(), po.getMaxId(),
                 po.getCreateTime(), po.getUpdateTime());
     }
 
@@ -56,7 +56,7 @@ public class SegmentMetaRepositoryImpl implements SegmentMetaRepository {
         SegmentMetaPO po = new SegmentMetaPO();
         po.setId(entity.getId());
         po.setBizTag(entity.getBizTag());
-        po.setNextSegmentNumber(entity.getNextSegmentNumber());
+        po.setMaxId(entity.getMaxId());
         po.setCreateTime(entity.getCreateTime());
         po.setUpdateTime(entity.getUpdateTime());
         return po;

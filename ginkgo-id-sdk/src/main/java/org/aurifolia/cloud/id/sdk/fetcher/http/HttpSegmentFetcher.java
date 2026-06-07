@@ -32,7 +32,7 @@ public class HttpSegmentFetcher implements SegmentFetcher {
             Result<SegmentAllocateResponse> result =
                     feignClient.allocateSegment(new SegmentAllocateRequest(bizTag));
             if (result != null && result.isSuccess() && result.getData() != null) {
-                return result.getData().getNextSegmentNumber();
+                return result.getData().getMaxId();
             }
             log.warn("HTTP获取号段失败: {}", result != null ? result.getMessage() : "null");
             return null;
