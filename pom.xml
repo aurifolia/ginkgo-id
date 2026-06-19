@@ -28,6 +28,7 @@
 
         <dubbo.version>3.3.6</dubbo.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+
     </properties>
 
     <dependencyManagement>
@@ -123,6 +124,7 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
