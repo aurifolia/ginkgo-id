@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 号段ID生成器
@@ -51,7 +50,7 @@ public class SegmentIdGenerator implements IdGenerator {
 
         if (!fillBuffer()) {
             log.warn("初始化号段缓冲失败，进入降级模式");
-            buffer.state.set(SegmentBuffer.STATE_DEGRADED);
+            buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
             recoveryProbe.start();
         }
     }
@@ -69,27 +68,31 @@ public class SegmentIdGenerator implements IdGenerator {
      * 从双缓冲中分配一段序列号（供ThreadLocalAllocator调用）
      *
      * @param chunkSize 请求的序列号块大小
-     * @return [segmentNumber, seqStart, seqEnd]，降级时返回null
+     * @param chunk     输出对象，分配成功时填充其字段
+     * @return 分配成功返回true，降级时返回false
      */
-    long[] allocateChunk(int chunkSize) {
+    boolean allocateChunk(int chunkSize, Chunk chunk) {
         while (true) {
-            int state = buffer.state.get();
+            int state = buffer.getStateOpaque();
 
             if (state == SegmentBuffer.STATE_DEGRADED) {
-                return null;
+                return false;
             }
 
             int slotIdx = buffer.activeSlot;
             SegmentSlot slot = buffer.slots[slotIdx];
 
             while (true) {
-                long seq = slot.sequence.get();
+                long seq = SegmentSlot.getSequenceOpaque(slot);
                 if (seq >= IdFormat.MAX_SEQ) {
                     break;
                 }
                 long newSeq = Math.min(seq + chunkSize, IdFormat.MAX_SEQ + 1);
-                if (slot.sequence.compareAndSet(seq, newSeq)) {
-                    return new long[]{slot.segmentNumber, seq, newSeq};
+                if (SegmentSlot.compareAndSetSequence(slot, seq, newSeq)) {
+                    chunk.segmentNumber = slot.segmentNumber;
+                    chunk.seqStart = seq;
+                    chunk.seqEnd = newSeq;
+                    return true;
                 }
             }
 
@@ -98,13 +101,13 @@ public class SegmentIdGenerator implements IdGenerator {
                 continue;
             }
 
-            if (buffer.state.compareAndSet(SegmentBuffer.STATE_NORMAL, SegmentBuffer.STATE_SWITCHING)) {
+            if (buffer.compareAndSetState(SegmentBuffer.STATE_NORMAL, SegmentBuffer.STATE_SWITCHING)) {
                 if (buffer.trySwitch()) {
                     triggerAsyncFetch();
                 } else {
-                    buffer.state.set(SegmentBuffer.STATE_DEGRADED);
+                    buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
                     recoveryProbe.start();
-                    return null;
+                    return false;
                 }
             }
         }
@@ -123,7 +126,7 @@ public class SegmentIdGenerator implements IdGenerator {
             } catch (Exception e) {
                 log.warn("号段补充异常，当前活跃号段仍可继续使用", e);
             } finally {
-                buffer.state.set(SegmentBuffer.STATE_NORMAL);
+                buffer.setStateVolatile(SegmentBuffer.STATE_NORMAL);
             }
         });
     }
@@ -148,7 +151,7 @@ public class SegmentIdGenerator implements IdGenerator {
     }
 
     private void attemptRecovery() {
-        if (buffer.state.get() != SegmentBuffer.STATE_DEGRADED) {
+        if (buffer.getStateOpaque() != SegmentBuffer.STATE_DEGRADED) {
             recoveryProbe.stop();
             return;
         }
@@ -162,7 +165,7 @@ public class SegmentIdGenerator implements IdGenerator {
                 return;
             }
             buffer.init(seg0, seg1);
-            buffer.state.set(SegmentBuffer.STATE_NORMAL);
+            buffer.setStateVolatile(SegmentBuffer.STATE_NORMAL);
             recoveryProbe.stop();
             log.info("服务恢复，退出降级模式");
         } catch (Exception e) {

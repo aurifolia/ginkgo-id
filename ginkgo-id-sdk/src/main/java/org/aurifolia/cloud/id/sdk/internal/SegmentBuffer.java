@@ -1,6 +1,7 @@
 package org.aurifolia.cloud.id.sdk.internal;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 
 /**
  * 号段双缓冲
@@ -17,9 +18,20 @@ final class SegmentBuffer {
     static final int STATE_SWITCHING = 1;
     static final int STATE_DEGRADED = 2;
 
+    private static final VarHandle STATE;
+
+    static {
+        try {
+            STATE = MethodHandles.lookup()
+                    .findVarHandle(SegmentBuffer.class, "state", int.class);
+        } catch (ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     volatile SegmentSlot[] slots = new SegmentSlot[2];
     volatile int activeSlot = 0;
-    final AtomicInteger state = new AtomicInteger(STATE_NORMAL);
+    volatile int state = STATE_NORMAL;
 
     /**
      * 初始化双缓冲
@@ -28,7 +40,7 @@ final class SegmentBuffer {
         slots[0] = new SegmentSlot(seg0);
         slots[1] = new SegmentSlot(seg1);
         activeSlot = 0;
-        state.set(STATE_NORMAL);
+        STATE.setVolatile(this, STATE_NORMAL);
     }
 
     /**
@@ -47,10 +59,22 @@ final class SegmentBuffer {
     boolean trySwitch() {
         int current = activeSlot;
         int next = 1 - current;
-        if (slots[next].sequence.get() < IdFormat.MAX_SEQ) {
+        if (SegmentSlot.getSequenceVolatile(slots[next]) < IdFormat.MAX_SEQ) {
             activeSlot = next;
             return true;
         }
         return false;
+    }
+
+    int getStateOpaque() {
+        return (int) STATE.getOpaque(this);
+    }
+
+    boolean compareAndSetState(int expected, int update) {
+        return STATE.compareAndSet(this, expected, update);
+    }
+
+    void setStateVolatile(int value) {
+        STATE.setVolatile(this, value);
     }
 }
