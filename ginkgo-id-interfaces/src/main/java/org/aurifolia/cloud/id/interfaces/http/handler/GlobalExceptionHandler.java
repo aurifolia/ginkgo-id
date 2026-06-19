@@ -27,21 +27,18 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleDomainException(DomainException e) {
         log.warn("Domain exception: {}", e.getMessage());
         return Result.fail(IdResultCode.DOMAIN_ERROR);
     }
 
     @ExceptionHandler(IdGenerationException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleIdGenerationException(IdGenerationException e) {
         log.error("ID generation exception: {}", e.getMessage(), e);
         return Result.fail(IdResultCode.ID_GENERATION_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleValidationException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
@@ -50,14 +47,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
     public Result<Void> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         log.warn("Data integrity violation: {}", e.getMostSpecificCause().getMessage());
         return Result.fail(IdResultCode.DATA_CONFLICT);
     }
 
     @ExceptionHandler(TransactionSystemException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
     public Result<Void> handleTransactionSystemException(TransactionSystemException e) {
         Throwable cause = e.getOriginalException();
         if (cause instanceof DataIntegrityViolationException dive) {
@@ -69,7 +64,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleException(Exception e) {
         log.error("Unexpected exception", e);
         return Result.fail(IdResultCode.INTERNAL_ERROR);
