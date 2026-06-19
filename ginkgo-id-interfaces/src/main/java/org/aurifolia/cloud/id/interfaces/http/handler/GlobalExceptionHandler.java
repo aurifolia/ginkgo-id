@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.common.model.Result;
 import org.aurifolia.cloud.id.common.exception.IdGenerationException;
 import org.aurifolia.cloud.id.domain.exception.DomainException;
+import org.aurifolia.cloud.id.interfaces.http.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,9 +26,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result<Void> handleDomainException(DomainException e) {
+    public ErrorResponse handleDomainException(DomainException e) {
         log.warn("领域异常: {}", e.getMessage());
-        return Result.fail(e.getMessage());
+        return new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
     }
 
     @ExceptionHandler(IdGenerationException.class)
