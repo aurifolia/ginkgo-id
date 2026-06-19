@@ -1,7 +1,6 @@
 package org.aurifolia.cloud.id.sdk.internal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,9 +16,8 @@ import java.util.concurrent.TimeUnit;
  * @author Peng Dan
  * @since 2.0
  */
+@Slf4j
 final class RecoveryProbe {
-
-    private static final Logger log = LoggerFactory.getLogger(RecoveryProbe.class);
 
     private static final long INITIAL_DELAY_SECONDS = 5;
     private static final long PERIOD_SECONDS = 5;
@@ -42,7 +40,7 @@ final class RecoveryProbe {
      */
     synchronized void start() {
         if (probeTask == null || probeTask.isDone()) {
-            log.info("启动恢复探测");
+            log.info("Starting recovery probe");
             probeTask = executor.scheduleAtFixedRate(
                     this::probe, INITIAL_DELAY_SECONDS, PERIOD_SECONDS, TimeUnit.SECONDS);
         }
@@ -55,7 +53,7 @@ final class RecoveryProbe {
         if (probeTask != null) {
             probeTask.cancel(false);
             probeTask = null;
-            log.info("停止恢复探测");
+            log.info("Stopping recovery probe");
         }
     }
 
@@ -71,7 +69,7 @@ final class RecoveryProbe {
         try {
             recoveryAction.run();
         } catch (Exception e) {
-            log.debug("恢复探测异常", e);
+            log.debug("Recovery probe exception", e);
         }
     }
 }

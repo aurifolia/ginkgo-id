@@ -1,9 +1,8 @@
 package org.aurifolia.cloud.id.sdk.fetcher.rpc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.id.sdk.fetcher.SegmentFetcher;
 import org.aurifolia.cloud.id.sdk.rpc.IdMetaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 基于Dubbo RPC的号段获取器
@@ -11,9 +10,8 @@ import org.slf4j.LoggerFactory;
  * @author Peng Dan
  * @since 2.0
  */
+@Slf4j
 public class RpcSegmentFetcher implements SegmentFetcher {
-
-    private static final Logger log = LoggerFactory.getLogger(RpcSegmentFetcher.class);
 
     private final IdMetaService idMetaService;
     private final String bizTag;
@@ -28,7 +26,7 @@ public class RpcSegmentFetcher implements SegmentFetcher {
         try {
             return idMetaService.nextSegment(bizTag);
         } catch (Exception e) {
-            log.warn("RPC获取号段异常", e);
+            log.warn("RPC segment fetch exception", e);
             return null;
         }
     }

@@ -1,9 +1,8 @@
 package org.aurifolia.cloud.id.sdk.internal;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.id.sdk.IdGenerator;
 import org.aurifolia.cloud.id.sdk.fetcher.SegmentFetcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,9 +17,8 @@ import java.util.concurrent.Executors;
  * @author Peng Dan
  * @since 2.0
  */
+@Slf4j
 public class SegmentIdGenerator implements IdGenerator {
-
-    private static final Logger log = LoggerFactory.getLogger(SegmentIdGenerator.class);
 
     private final SegmentFetcher fetcher;
     private final DegradedIdGenerator degradedGenerator;
@@ -49,7 +47,7 @@ public class SegmentIdGenerator implements IdGenerator {
         this.threadLocalAllocator = ThreadLocal.withInitial(() -> new ThreadLocalAllocator(this));
 
         if (!fillBuffer()) {
-            log.warn("初始化号段缓冲失败，进入降级模式");
+            log.warn("Failed to initialize segment buffer, entering degraded mode");
             buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
             recoveryProbe.start();
         }
@@ -119,12 +117,12 @@ public class SegmentIdGenerator implements IdGenerator {
                 Long segmentNumber = fetcher.fetchSegment();
                 if (segmentNumber != null) {
                     buffer.refillInactiveSlot(segmentNumber);
-                    log.debug("号段补充成功: segmentNumber={}", segmentNumber);
+                    log.debug("Segment refilled successfully: segmentNumber={}", segmentNumber);
                 } else {
-                    log.warn("号段补充失败，当前活跃号段仍可继续使用");
+                    log.warn("Segment refill failed, current active segment still usable");
                 }
             } catch (Exception e) {
-                log.warn("号段补充异常，当前活跃号段仍可继续使用", e);
+                log.warn("Segment refill exception, current active segment still usable", e);
             } finally {
                 buffer.setStateVolatile(SegmentBuffer.STATE_NORMAL);
             }
@@ -142,10 +140,10 @@ public class SegmentIdGenerator implements IdGenerator {
                 return false;
             }
             buffer.init(seg0, seg1);
-            log.info("号段缓冲初始化成功: seg0={}, seg1={}", seg0, seg1);
+            log.info("Segment buffer initialized successfully: seg0={}, seg1={}", seg0, seg1);
             return true;
         } catch (Exception e) {
-            log.error("号段缓冲初始化异常", e);
+            log.error("Segment buffer initialization exception", e);
             return false;
         }
     }
@@ -167,9 +165,9 @@ public class SegmentIdGenerator implements IdGenerator {
             buffer.init(seg0, seg1);
             buffer.setStateVolatile(SegmentBuffer.STATE_NORMAL);
             recoveryProbe.stop();
-            log.info("服务恢复，退出降级模式");
+            log.info("Service recovered, exiting degraded mode");
         } catch (Exception e) {
-            log.debug("恢复探测失败", e);
+            log.debug("Recovery probe failed", e);
         }
     }
 

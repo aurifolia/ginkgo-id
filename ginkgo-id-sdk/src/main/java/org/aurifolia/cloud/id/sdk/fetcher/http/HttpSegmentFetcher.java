@@ -1,12 +1,11 @@
 package org.aurifolia.cloud.id.sdk.fetcher.http;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.id.sdk.fetcher.SegmentFetcher;
 import org.aurifolia.cloud.id.sdk.http.dto.Result;
 import org.aurifolia.cloud.id.sdk.http.dto.SegmentAllocateRequest;
 import org.aurifolia.cloud.id.sdk.http.dto.SegmentAllocateResponse;
 import org.aurifolia.cloud.id.sdk.http.feign.IdGeneratorFeignClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 基于OpenFeign的号段获取器
@@ -14,9 +13,8 @@ import org.slf4j.LoggerFactory;
  * @author Peng Dan
  * @since 2.0
  */
+@Slf4j
 public class HttpSegmentFetcher implements SegmentFetcher {
-
-    private static final Logger log = LoggerFactory.getLogger(HttpSegmentFetcher.class);
 
     private final IdGeneratorFeignClient feignClient;
     private final String bizTag;
@@ -34,10 +32,10 @@ public class HttpSegmentFetcher implements SegmentFetcher {
             if (result != null && result.isSuccess() && result.getData() != null) {
                 return result.getData().getMaxId();
             }
-            log.warn("HTTP获取号段失败: {}", result != null ? result.getMessage() : "null");
+            log.warn("HTTP segment fetch failed: {}", result != null ? result.getMessage() : "null");
             return null;
         } catch (Exception e) {
-            log.warn("HTTP获取号段异常", e);
+            log.warn("HTTP segment fetch exception", e);
             return null;
         }
     }
