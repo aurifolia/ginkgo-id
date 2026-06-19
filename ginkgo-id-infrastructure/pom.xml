@@ -71,10 +71,14 @@
             <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
         </dependency>
         
-        <!-- Gson (required by Dubbo for JSON serialization) -->
+        <!-- JSON libraries required by Dubbo for serialization -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
 
 
