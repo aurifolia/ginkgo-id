@@ -10,7 +10,6 @@ import org.aurifolia.cloud.id.domain.exception.DomainException;
 import org.aurifolia.cloud.id.domain.exception.IdDomainErrorCode;
 import org.aurifolia.cloud.id.domain.segment.entity.SegmentMeta;
 import org.aurifolia.cloud.id.domain.segment.repository.SegmentMetaRepository;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +44,7 @@ public class SegmentMetaAppServiceImpl implements SegmentMetaAppService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void registerBizTag(SegmentMetaRegisterCommand command) {
-        try {
-            SegmentMeta meta = SegmentMeta.create(command.getBizTag());
-            repository.save(meta);
-        } catch (DuplicateKeyException e) {
-            throw new DomainException(IdDomainErrorCode.BIZ_TAG_ALREADY_EXISTS, command.getBizTag());
-        }
+        SegmentMeta meta = SegmentMeta.create(command.getBizTag());
+        repository.save(meta);
     }
 }

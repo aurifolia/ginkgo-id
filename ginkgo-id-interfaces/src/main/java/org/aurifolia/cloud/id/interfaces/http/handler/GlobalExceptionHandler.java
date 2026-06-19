@@ -3,9 +3,11 @@ package org.aurifolia.cloud.id.interfaces.http.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.common.model.Result;
 import org.aurifolia.cloud.id.common.exception.IdGenerationException;
+import org.aurifolia.cloud.id.common.model.IdResultCode;
 import org.aurifolia.cloud.id.domain.exception.DomainException;
-import org.aurifolia.cloud.id.interfaces.http.response.ErrorResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,16 +28,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleDomainException(DomainException e) {
-        log.warn("领域异常: {}", e.getMessage());
-        return new ErrorResponse(e.getErrorCode().getCode(), e.getMessage());
+    public Result<Void> handleDomainException(DomainException e) {
+        log.warn("Domain exception: {}", e.getMessage());
+        return Result.fail(IdResultCode.DOMAIN_ERROR);
     }
 
     @ExceptionHandler(IdGenerationException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleIdGenerationException(IdGenerationException e) {
-        log.error("ID生成异常: {}", e.getMessage(), e);
-        return Result.fail(e.getMessage());
+        log.error("ID generation exception: {}", e.getMessage(), e);
+        return Result.fail(IdResultCode.ID_GENERATION_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -44,13 +46,32 @@ public class GlobalExceptionHandler {
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining("; "));
-        return Result.fail(message);
+        return Result.fail(IdResultCode.PARAM_ERROR, message);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Result<Void> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("Data integrity violation: {}", e.getMostSpecificCause().getMessage());
+        return Result.fail(IdResultCode.DATA_CONFLICT);
+    }
+
+    @ExceptionHandler(TransactionSystemException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Result<Void> handleTransactionSystemException(TransactionSystemException e) {
+        Throwable cause = e.getOriginalException();
+        if (cause instanceof DataIntegrityViolationException dive) {
+            log.warn("Data integrity violation on commit: {}", dive.getMostSpecificCause().getMessage());
+            return Result.fail(IdResultCode.DATA_CONFLICT);
+        }
+        log.error("Transaction system exception", e);
+        return Result.fail(IdResultCode.INTERNAL_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleException(Exception e) {
-        log.error("未知异常", e);
-        return Result.fail("服务器内部错误");
+        log.error("Unexpected exception", e);
+        return Result.fail(IdResultCode.INTERNAL_ERROR);
     }
 }
