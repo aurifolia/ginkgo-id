@@ -1,5 +1,6 @@
 package org.aurifolia.cloud.id.infrastructure.segment.po;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,30 +12,23 @@ import java.time.LocalDateTime;
  * @since 2.0
  */
 @Data
+@Entity
+@Table(name = "segment_meta")
 public class SegmentMetaPO {
 
-    /**
-     * 自增主键ID
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 业务标签
-     */
+    @Column(name = "biz_tag", nullable = false, unique = true, length = 64)
     private String bizTag;
 
-    /**
-     * 当前已分配的最大号段编号
-     */
+    @Column(name = "max_id", nullable = false)
     private Long maxId;
 
-    /**
-     * 创建时间
-     */
+    @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
 
-    /**
-     * 更新时间
-     */
+    @Column(name = "update_time", nullable = false)
     private LocalDateTime updateTime;
 }

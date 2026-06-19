@@ -1,7 +1,6 @@
 package org.aurifolia.cloud.id.bootstrap;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @EnableDubbo
 @SpringBootApplication(scanBasePackages = "org.aurifolia.cloud.id")
-@MapperScan("org.aurifolia.cloud.id.infrastructure.*.mapper")
 public class GinkgoIdApplication {
     
     public static void main(String[] args) {
