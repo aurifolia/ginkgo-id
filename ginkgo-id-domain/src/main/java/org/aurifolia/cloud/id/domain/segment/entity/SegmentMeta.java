@@ -1,7 +1,6 @@
 package org.aurifolia.cloud.id.domain.segment.entity;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,12 +12,10 @@ import java.time.LocalDateTime;
  */
 @Getter
 public class SegmentMeta {
-    @Setter
     private Long id;
     private String bizTag;
     private Long maxId;
     private LocalDateTime createTime;
-    @Setter
     private LocalDateTime updateTime;
 
     /**
@@ -55,5 +52,9 @@ public class SegmentMeta {
     public void allocateNextSegment() {
         this.maxId++;
         this.updateTime = LocalDateTime.now();
+    }
+
+    public void assignId(Long id) {
+        this.id = id;
     }
 }

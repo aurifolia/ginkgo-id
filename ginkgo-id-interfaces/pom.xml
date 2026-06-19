@@ -32,6 +32,13 @@
             <version>${project.version}</version>
         </dependency>
         
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-common-logging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

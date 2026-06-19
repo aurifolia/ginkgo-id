@@ -9,7 +9,6 @@ import org.aurifolia.cloud.id.application.segment.service.SegmentMetaAppService;
 import org.aurifolia.cloud.id.interfaces.http.request.AllocateSegmentRequest;
 import org.aurifolia.cloud.id.interfaces.http.request.RegisterBizTagRequest;
 import org.aurifolia.cloud.id.interfaces.http.response.SegmentMetaResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +46,9 @@ public class SegmentMetaController {
             @Validated @RequestBody AllocateSegmentRequest request) {
         SegmentMetaDTO dto = appService.allocateSegment(
                 new AllocateSegmentCommand(request.getBizTag()));
-        SegmentMetaResponse response = new SegmentMetaResponse();
-        BeanUtils.copyProperties(dto, response);
+        SegmentMetaResponse response = new SegmentMetaResponse(
+                dto.getId(), dto.getBizTag(), dto.getMaxId(),
+                dto.getCreateTime(), dto.getUpdateTime());
         return Result.success(response);
     }
 }

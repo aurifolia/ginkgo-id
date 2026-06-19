@@ -9,6 +9,7 @@ import org.aurifolia.cloud.id.application.segment.service.SegmentMetaAppService;
 import org.aurifolia.cloud.id.domain.exception.DomainException;
 import org.aurifolia.cloud.id.domain.segment.entity.SegmentMeta;
 import org.aurifolia.cloud.id.domain.segment.repository.SegmentMetaRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ public class SegmentMetaAppServiceImpl implements SegmentMetaAppService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public SegmentMetaDTO allocateSegment(AllocateSegmentCommand command) {
         SegmentMeta meta = repository.findByBizTagForUpdate(command.getBizTag())
                 .orElseThrow(() -> new DomainException("bizTag未注册: " + command.getBizTag()));
@@ -41,12 +42,13 @@ public class SegmentMetaAppServiceImpl implements SegmentMetaAppService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void registerBizTag(SegmentMetaRegisterCommand command) {
-        if (repository.findByBizTag(command.getBizTag()).isPresent()) {
-            throw new IllegalStateException("bizTag已存在: " + command.getBizTag());
+        try {
+            SegmentMeta meta = SegmentMeta.create(command.getBizTag());
+            repository.save(meta);
+        } catch (DuplicateKeyException e) {
+            throw new DomainException("bizTag已存在: " + command.getBizTag());
         }
-        SegmentMeta meta = SegmentMeta.create(command.getBizTag());
-        repository.save(meta);
     }
 }

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.common.model.Result;
 import org.aurifolia.cloud.id.common.exception.IdGenerationException;
 import org.aurifolia.cloud.id.domain.exception.DomainException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,13 +37,6 @@ public class GlobalExceptionHandler {
         return Result.fail(e.getMessage());
     }
 
-    @ExceptionHandler(DuplicateKeyException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Result<Void> handleDuplicateKeyException(DuplicateKeyException e) {
-        log.warn("数据重复: {}", e.getMessage());
-        return Result.fail("数据已存在");
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleValidationException(MethodArgumentNotValidException e) {
@@ -52,13 +44,6 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining("; "));
         return Result.fail(message);
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result<Void> handleIllegalStateException(IllegalStateException e) {
-        log.warn("非法状态: {}", e.getMessage());
-        return Result.fail(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

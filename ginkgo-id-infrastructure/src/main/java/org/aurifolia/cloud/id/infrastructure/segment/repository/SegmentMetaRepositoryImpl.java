@@ -34,7 +34,7 @@ public class SegmentMetaRepositoryImpl implements SegmentMetaRepository {
     public void save(SegmentMeta meta) {
         SegmentMetaPO po = toPO(meta);
         SegmentMetaPO saved = jpaRepository.save(po);
-        meta.setId(saved.getId());
+        meta.assignId(saved.getId());
     }
 
     @Override

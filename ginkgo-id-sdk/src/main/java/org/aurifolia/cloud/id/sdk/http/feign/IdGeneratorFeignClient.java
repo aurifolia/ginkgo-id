@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author Peng Dan
  * @since 2.0
  */
-@FeignClient(name = "ginkgo-id-server", url = "${ginkgo.id.server.url:http://localhost:60101}")
+@FeignClient(name = "ginkgo-id-metaserver", url = "${ginkgo.id.server.url:http://localhost:60101}")
 public interface IdGeneratorFeignClient {
 
     /**

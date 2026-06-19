@@ -26,12 +26,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.aurifolia.cloud</groupId>
-            <artifactId>ginkgo-common-logging</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
+
 
     </dependencies>
 </project>

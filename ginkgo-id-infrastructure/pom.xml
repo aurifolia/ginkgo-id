@@ -34,7 +34,7 @@
             <version>${project.version}</version>
         </dependency>
         
-        <!-- SDK module (for IdMetaService interface) -->
+        <!-- SDK module: Dubbo API contract (IdMetaService) is defined in SDK and shared by provider/consumer -->
         <dependency>
             <groupId>org.aurifolia.cloud</groupId>
             <artifactId>ginkgo-id-sdk</artifactId>
@@ -77,11 +77,8 @@
             <artifactId>gson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        
+
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
