@@ -13,6 +13,11 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.aurifolia.cloud</groupId>
+            <artifactId>ginkgo-common-ddd</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Common module -->
         <dependency>
             <groupId>org.aurifolia.cloud</groupId>

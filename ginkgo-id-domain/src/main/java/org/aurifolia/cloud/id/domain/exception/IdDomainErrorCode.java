@@ -2,6 +2,7 @@ package org.aurifolia.cloud.id.domain.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.aurifolia.cloud.common.ddd.ErrorCode;
 
 /**
  * ID领域错误码

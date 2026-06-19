@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aurifolia.cloud.common.model.Result;
 import org.aurifolia.cloud.id.common.exception.IdGenerationException;
 import org.aurifolia.cloud.id.common.model.IdResultCode;
-import org.aurifolia.cloud.id.domain.exception.DomainException;
+import org.aurifolia.cloud.common.ddd.DomainException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.TransactionSystemException;

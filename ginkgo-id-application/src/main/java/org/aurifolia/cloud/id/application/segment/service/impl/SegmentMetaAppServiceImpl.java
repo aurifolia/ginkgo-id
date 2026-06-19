@@ -6,7 +6,7 @@ import org.aurifolia.cloud.id.application.segment.command.SegmentMetaRegisterCom
 import org.aurifolia.cloud.id.application.segment.converter.SegmentMetaConverter;
 import org.aurifolia.cloud.id.application.segment.dto.SegmentMetaDTO;
 import org.aurifolia.cloud.id.application.segment.service.SegmentMetaAppService;
-import org.aurifolia.cloud.id.domain.exception.DomainException;
+import org.aurifolia.cloud.common.ddd.DomainException;
 import org.aurifolia.cloud.id.domain.exception.IdDomainErrorCode;
 import org.aurifolia.cloud.id.domain.segment.entity.SegmentMeta;
 import org.aurifolia.cloud.id.domain.segment.repository.SegmentMetaRepository;
