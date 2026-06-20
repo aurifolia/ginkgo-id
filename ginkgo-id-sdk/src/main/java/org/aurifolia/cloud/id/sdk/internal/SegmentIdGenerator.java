@@ -25,18 +25,21 @@ public class SegmentIdGenerator implements IdGenerator {
     private final SegmentBuffer buffer;
     private final RecoveryProbe recoveryProbe;
     private final ExecutorService fetchExecutor;
+    private final boolean degradeEnabled;
 
     private final ThreadLocal<ThreadLocalAllocator> threadLocalAllocator;
 
     /**
      * 构造函数，初始化双缓冲
      *
-     * @param fetcher 号段获取器
+     * @param fetcher           号段获取器
      * @param degradedGenerator 降级模式ID生成器
+     * @param degradeEnabled    是否启用降级模式
      */
-    public SegmentIdGenerator(SegmentFetcher fetcher, DegradedIdGenerator degradedGenerator) {
+    public SegmentIdGenerator(SegmentFetcher fetcher, DegradedIdGenerator degradedGenerator, boolean degradeEnabled) {
         this.fetcher = fetcher;
         this.degradedGenerator = degradedGenerator;
+        this.degradeEnabled = degradeEnabled;
         this.buffer = new SegmentBuffer();
         this.fetchExecutor = Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "id-segment-fetcher");
@@ -47,9 +50,13 @@ public class SegmentIdGenerator implements IdGenerator {
         this.threadLocalAllocator = ThreadLocal.withInitial(() -> new ThreadLocalAllocator(this));
 
         if (!fillBuffer()) {
-            log.warn("Failed to initialize segment buffer, entering degraded mode");
-            buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
-            recoveryProbe.start();
+            if (degradeEnabled) {
+                log.warn("Failed to initialize segment buffer, entering degraded mode");
+                buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
+                recoveryProbe.start();
+            } else {
+                throw new IllegalStateException("Failed to initialize segment buffer and degradation is disabled");
+            }
         }
     }
 
@@ -58,6 +65,9 @@ public class SegmentIdGenerator implements IdGenerator {
         long id = threadLocalAllocator.get().nextId();
         if (id >= 0) {
             return id;
+        }
+        if (!degradeEnabled) {
+            throw new IllegalStateException("Segment buffer exhausted and degradation is disabled");
         }
         return degradedGenerator.nextId();
     }
@@ -103,9 +113,14 @@ public class SegmentIdGenerator implements IdGenerator {
                 if (buffer.trySwitch()) {
                     triggerAsyncFetch();
                 } else {
-                    buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
-                    recoveryProbe.start();
-                    return false;
+                    if (degradeEnabled) {
+                        buffer.setStateVolatile(SegmentBuffer.STATE_DEGRADED);
+                        recoveryProbe.start();
+                        return false;
+                    } else {
+                        buffer.setStateVolatile(SegmentBuffer.STATE_NORMAL);
+                        throw new IllegalStateException("Segment buffer exhausted and degradation is disabled");
+                    }
                 }
             }
         }

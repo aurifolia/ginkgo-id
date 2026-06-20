@@ -31,6 +31,6 @@ public class HttpSdkAutoConfiguration {
                                    IdGeneratorProperties properties) {
         HttpSegmentFetcher fetcher = new HttpSegmentFetcher(feignClient, properties.getBizTag());
         DegradedIdGenerator degradedGenerator = new DegradedIdGenerator();
-        return new SegmentIdGenerator(fetcher, degradedGenerator);
+        return new SegmentIdGenerator(fetcher, degradedGenerator, properties.getDegradeEnabled());
     }
 }

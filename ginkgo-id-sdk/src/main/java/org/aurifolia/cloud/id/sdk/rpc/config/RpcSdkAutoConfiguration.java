@@ -34,6 +34,6 @@ public class RpcSdkAutoConfiguration {
     public IdGenerator idGenerator(RpcIdGeneratorProperties properties) {
         RpcSegmentFetcher fetcher = new RpcSegmentFetcher(idMetaService, properties.getBizTag());
         DegradedIdGenerator degradedGenerator = new DegradedIdGenerator();
-        return new SegmentIdGenerator(fetcher, degradedGenerator);
+        return new SegmentIdGenerator(fetcher, degradedGenerator, properties.getDegradeEnabled());
     }
 }

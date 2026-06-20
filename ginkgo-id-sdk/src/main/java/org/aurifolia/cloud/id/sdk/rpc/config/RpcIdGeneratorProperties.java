@@ -22,4 +22,9 @@ public class RpcIdGeneratorProperties {
      * 是否启用
      */
     private Boolean enabled = false;
+
+    /**
+     * 是否启用降级模式，默认true
+     */
+    private Boolean degradeEnabled = true;
 }
